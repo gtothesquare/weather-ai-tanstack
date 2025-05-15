@@ -10,7 +10,7 @@ function LayoutComponent() {
   return (
     <>
       <Header />
-      <main className="flex flex-col grow">
+      <main className="flex flex-col grow inset-shadow-xs">
         <Outlet />
       </main>
       <Footer />

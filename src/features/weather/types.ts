@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { weatherSchema } from './schemas';
+import { coordinatesSchema, locationSchema, weatherSchema } from './schemas';
 
 export interface CurrentWeather {
   time: string;
@@ -16,3 +16,6 @@ export type WeatherData = z.infer<typeof weatherSchema>;
 export interface WeatherResponse {
   current: CurrentWeather;
 }
+
+export type Location = z.infer<typeof locationSchema>;
+export type Coordinates = z.infer<typeof coordinatesSchema>;

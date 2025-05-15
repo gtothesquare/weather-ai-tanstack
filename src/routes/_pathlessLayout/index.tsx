@@ -1,3 +1,5 @@
+'use client';
+
 import { createFileRoute } from '@tanstack/react-router';
 import { useChat } from '@ai-sdk/react';
 import { Alert } from '~/components/ui/Alert';
@@ -22,7 +24,7 @@ export default function Home() {
       api: '/api/weather',
       async onToolCall({ toolCall }) {
         if (typeof window !== 'undefined') {
-          if (toolCall.toolName === 'getUserLocation') {
+          if (toolCall.toolName === 'userLocation') {
             if (navigator.geolocation) {
               const location = await getLocationPromise();
               return JSON.stringify({
@@ -42,7 +44,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col h-full min-w-0 bg-background">
+    <div className="flex flex-col h-full min-w-0">
       <div className="w-full h-full">
         <ChatMessages messages={messages} status={status} />
       </div>

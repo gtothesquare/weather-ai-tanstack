@@ -117,7 +117,16 @@
     * {
         @apply border-border outline-ring/50;
     }
+
     body {
         @apply bg-background text-foreground;
     }
+}
+
+main {
+    background-color: #fff;
+    opacity: 0.8;
+    background-image: radial-gradient(#959595 0.5px, transparent 0.5px), radial-gradient(#959595 0.5px, #fff 0.5px);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
 }

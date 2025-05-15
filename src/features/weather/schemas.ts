@@ -16,3 +16,14 @@ export const outputSchema = z.object({
   data: weatherSchema.optional(),
   error: z.string().optional(),
 });
+
+export const locationSchema = z.object({
+  location: z.string().describe('City name'),
+});
+
+export const coordinatesSchema = z.object({
+  coordinates: z.object({
+    latitude: z.number().describe('Location latitude coordinate'),
+    longitude: z.number().describe('location longitude coordinate'),
+  }),
+});

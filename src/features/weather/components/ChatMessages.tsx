@@ -22,7 +22,7 @@ export const ChatMessages = ({ messages, status }: Props) => {
     <div className="flex flex-col min-w-0 gap-6 flex-1 overflow-y-auto pt-4">
       {messages.map((message, index) => {
         return (
-          <React.Fragment key={index}>
+          <React.Fragment key={message.id}>
             <div
               className={twMerge(
                 'w-full text-sm flex mx-auto max-w-3xl',
@@ -32,26 +32,26 @@ export const ChatMessages = ({ messages, status }: Props) => {
               {message.role === 'user' && (
                 <UserMessage content={message.content} />
               )}
-              {message.role === 'assistant' &&
-                typeof message.content === 'string' && (
-                  <AiMessage
-                    content={message.content}
-                    isLoading={
-                      status === 'submitted' && messages.length - 1 === index
-                    }
-                  />
-                )}
+              {message.role === 'assistant' && (
+                <AiMessage
+                  content={message.content}
+                  isLoading={
+                    status === 'submitted' && messages.length - 1 === index
+                  }
+                />
+              )}
             </div>
 
             <div className="w-full text-sm flex mx-auto max-w-3xl">
-              {message.parts?.map((part, partIndex) => {
+              {message.parts?.map((part) => {
                 if (part.type === 'tool-invocation') {
                   const tool = (part as ToolInvocationUIPart).toolInvocation;
+                  const callId = part.toolInvocation.toolCallId;
 
                   if (tool.toolName === 'currentLocation') {
                     if (tool.state === 'call') {
                       return (
-                        <div key={partIndex} className="text-gray-500">
+                        <div key={callId} className="text-gray-500">
                           <AiMessage content="Getting location..." />
                         </div>
                       );
@@ -61,7 +61,24 @@ export const ChatMessages = ({ messages, status }: Props) => {
                     ) {
                       return (
                         <AiMessage
-                          key={partIndex}
+                          key={callId}
+                          content={`Location: ${tool.result}`}
+                        />
+                      );
+                    }
+                  }
+                  if (tool.toolName === 'userLocation') {
+                    if (tool.state === 'call') {
+                      return (
+                        <AiMessage
+                          key={callId}
+                          content={`Getting location...`}
+                        />
+                      );
+                    } else if (tool.state === 'result') {
+                      return (
+                        <AiMessage
+                          key={callId}
                           content={`Location: ${tool.result}`}
                         />
                       );
@@ -75,7 +92,7 @@ export const ChatMessages = ({ messages, status }: Props) => {
                     tool.result.data
                   ) {
                     return (
-                      <WeatherWidget key={partIndex} data={tool.result.data} />
+                      <WeatherWidget key={callId} data={tool.result.data} />
                     );
                   }
                 }

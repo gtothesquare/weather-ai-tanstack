@@ -2,7 +2,7 @@ import { WeatherIcon } from './WeatherIcon';
 import { VStack } from '~/components/ui/VStack';
 import { HStack } from '~/components/ui/HStack';
 import { Card, CardContent } from '~/components/sui/card';
-import { WeatherData } from '../tool/types';
+import { WeatherData } from '../types';
 
 interface Props {
   data: WeatherData;

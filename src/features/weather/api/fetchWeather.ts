@@ -1,20 +1,12 @@
 import { getWeatherCondition } from './getWeatherCondition';
-import { WeatherResponse } from './types';
+import { Coordinates, Location, WeatherResponse } from '../types';
 
-interface Coordinates {
-  latitude: number;
-  longitude: number;
-}
-
-interface FetchWeatherParams {
-  location?: string;
-  coordinates?: Coordinates;
-}
+type FetchWeatherParams = Location | Coordinates;
 
 export const fetchWeather = async (params: FetchWeatherParams) => {
-  let lat, long, city;
+  let lat: string, long: string, city: string;
 
-  if (params.location) {
+  if ('location' in params) {
     const geocodingUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(params.location)}&count=1`;
     const geocodingResponse = await fetch(geocodingUrl);
     const geocodingData = await geocodingResponse.json();
@@ -22,9 +14,9 @@ export const fetchWeather = async (params: FetchWeatherParams) => {
     lat = latitude;
     long = longitude;
     city = name;
-  } else if (params.coordinates) {
-    lat = params.coordinates.latitude;
-    long = params.coordinates.longitude;
+  } else {
+    lat = params.coordinates.latitude.toString();
+    long = params.coordinates.longitude.toString();
   }
 
   if (!lat || !long) {
