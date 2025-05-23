@@ -23,7 +23,6 @@ function getAlertStyles(type?: AlertType) {
 }
 
 export const Alert = ({ type = 'info', title, children }: Props) => {
-  console.log(type)
   return (
     <div
       className={twMerge(

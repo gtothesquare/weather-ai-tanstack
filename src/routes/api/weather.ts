@@ -5,7 +5,6 @@ export const APIRoute = createAPIFileRoute('/api/weather')({
   POST: async ({ request }) => {
     const { messages } = await request.json();
 
-    // TODO error handling
     return generateWeatherResponse(messages);
   },
 });

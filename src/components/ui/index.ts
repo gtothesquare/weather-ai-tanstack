@@ -1,7 +1,5 @@
 export { Alert } from './Alert';
 export { Box } from './Box';
-export { Button } from './Button';
-export { Card } from './Card';
 export { Container } from './Container';
 export { Heading } from './Heading';
 export { HStack } from './HStack';
