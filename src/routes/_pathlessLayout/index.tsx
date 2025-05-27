@@ -1,21 +1,14 @@
-'use client';
-
 import { createFileRoute } from '@tanstack/react-router';
 import { useChat } from '@ai-sdk/react';
 import { Alert } from '~/components/ui/Alert';
-import { ChatMessages } from '~/features/weather/components/ChatMessages';
+import { MessagesContainer } from '~/features/messages/MessagesContainer';
 import { KeyboardEvent } from 'react';
 import { Textarea } from '~/components/sui/textarea';
+import { getUserLocationBrowser } from '~/features/location/utils/getUserLocationBrowser';
 
 export const Route = createFileRoute('/_pathlessLayout/')({
   component: Home,
 });
-
-const getLocationPromise = (): Promise<GeolocationPosition> => {
-  return new Promise((resolve, reject) => {
-    navigator.geolocation.getCurrentPosition(resolve, reject);
-  });
-};
 
 export default function Home() {
   const { messages, input, handleInputChange, handleSubmit, error, status } =
@@ -25,13 +18,7 @@ export default function Home() {
       async onToolCall({ toolCall }) {
         if (typeof window !== 'undefined') {
           if (toolCall.toolName === 'userLocation') {
-            if (navigator.geolocation) {
-              const location = await getLocationPromise();
-              return JSON.stringify({
-                latitude: location.coords.latitude,
-                longitude: location.coords.longitude,
-              });
-            }
+            return getUserLocationBrowser();
           }
         }
       },
@@ -49,7 +36,7 @@ export default function Home() {
   return (
     <div className="flex flex-col h-full min-w-0">
       <div className="w-full h-full">
-        <ChatMessages messages={messages} status={status} />
+        <MessagesContainer messages={messages} status={status} />
       </div>
 
       <div className="w-full pb-8 pt-4">

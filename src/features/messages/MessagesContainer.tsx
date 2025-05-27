@@ -1,17 +1,22 @@
-import React, { useEffect, useRef } from 'react';
+import React, { lazy, useEffect, useRef } from 'react';
 import { Message } from '@ai-sdk/react';
-import { WeatherWidget } from './WeatherWidget';
+import { WeatherWidget } from '../weather/components/WeatherWidget';
 import { twMerge } from 'tailwind-merge';
-import { UserMessage } from './UserMessage';
-import { AiMessage } from './AIMessage';
+import { UserMessage } from './components/UserMessage';
+import { AiMessage } from './components/AIMessage';
 import { ToolInvocationUIPart } from '@ai-sdk/ui-utils';
+import { ClientOnly } from '@tanstack/react-router';
+import { VStack } from '~/components/ui';
+import { Coordinates } from '~/features/weather/types';
+
+const LocationWidget = lazy(() => import('../location/LocationWidget'));
 
 interface Props {
   messages: Message[];
   status: 'submitted' | 'streaming' | 'ready' | 'error';
 }
 
-export const ChatMessages = ({ messages, status }: Props) => {
+export const MessagesContainer = ({ messages, status }: Props) => {
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -75,24 +80,34 @@ export const ChatMessages = ({ messages, status }: Props) => {
                           content={`Getting location...`}
                         />
                       );
-                    } else if (tool.state === 'result') {
-                      return (
-                        <AiMessage
-                          key={callId}
-                          content={`Location: ${tool.result}`}
-                        />
-                      );
                     }
                   }
 
                   if (
-                    tool.toolName === 'weatherInfo' &&
+                    (tool.toolName === 'weatherInfoWithCity' ||
+                      tool.toolName === 'weatherInfoWithCoordinates') &&
                     tool.state === 'result' &&
                     tool.result &&
                     tool.result.data
                   ) {
+                    const mapArgs = tool.args as Coordinates;
+                    const coordinates = mapArgs.coordinates;
+                    const renderMap =
+                      coordinates?.latitude !== undefined &&
+                      coordinates?.longitude !== undefined;
+
                     return (
-                      <WeatherWidget key={callId} data={tool.result.data} />
+                      <VStack spacing={'md'} key={callId}>
+                        {renderMap && (
+                          <ClientOnly fallback="Loading location map...">
+                            <LocationWidget
+                              latitude={coordinates.latitude}
+                              longitude={coordinates.longitude}
+                            />
+                          </ClientOnly>
+                        )}
+                        <WeatherWidget data={tool.result.data} />
+                      </VStack>
                     );
                   }
                 }

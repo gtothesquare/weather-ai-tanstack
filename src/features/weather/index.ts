@@ -4,7 +4,7 @@ import {
   weatherInfoWithCity,
   weatherInfoWithCoordinates,
 } from '~/features/weather/tools/weatherInfo';
-import { userLocation } from '~/features/weather/tools/userLocation';
+import { userLocation } from '~/features/location/tools/userLocation';
 
 export const generateWeatherResponse = async (messages: CoreMessage[]) => {
   try {
