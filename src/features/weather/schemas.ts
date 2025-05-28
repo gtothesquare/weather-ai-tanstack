@@ -11,12 +11,6 @@ export const weatherSchema = z.object({
   location: z.string(),
 });
 
-export const outputSchema = z.object({
-  success: z.boolean(),
-  data: weatherSchema.optional(),
-  error: z.string().optional(),
-});
-
 export const locationSchema = z.object({
   location: z.string().describe('City name'),
 });

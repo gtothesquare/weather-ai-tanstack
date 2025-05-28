@@ -1,10 +1,10 @@
+'use client';
 import React, { lazy, useEffect, useRef } from 'react';
 import { Message } from '@ai-sdk/react';
 import { WeatherWidget } from '../weather/components/WeatherWidget';
 import { twMerge } from 'tailwind-merge';
 import { UserMessage } from './components/UserMessage';
 import { AiMessage } from './components/AIMessage';
-import { ToolInvocationUIPart } from '@ai-sdk/ui-utils';
 import { ClientOnly } from '@tanstack/react-router';
 import { VStack } from '~/components/ui';
 import { Coordinates } from '~/features/weather/types';
@@ -23,6 +23,9 @@ export const MessagesContainer = ({ messages, status }: Props) => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  console.log('---');
+  console.log(messages);
+  console.log('---');
   return (
     <div className="flex flex-col min-w-0 gap-6 flex-1 overflow-y-auto pt-4">
       {messages.map((message, index) => {
@@ -50,69 +53,59 @@ export const MessagesContainer = ({ messages, status }: Props) => {
             <div className="w-full text-sm flex mx-auto max-w-3xl">
               {message.parts?.map((part) => {
                 if (part.type === 'tool-invocation') {
-                  const tool = (part as ToolInvocationUIPart).toolInvocation;
-                  const callId = part.toolInvocation.toolCallId;
+                  const toolInvocation = part.toolInvocation;
+                  const { state, toolName, toolCallId } = toolInvocation;
 
-                  if (tool.toolName === 'currentLocation') {
-                    if (tool.state === 'call') {
+                  if (state === 'result') {
+                    const { result } = toolInvocation;
+                    if (toolName === 'weatherInfoWithCoordinates') {
+                      const mapArgs = toolInvocation.args as Coordinates;
+                      const coordinates = mapArgs.coordinates;
+                      const renderMap =
+                        coordinates?.latitude !== undefined &&
+                        coordinates?.longitude !== undefined;
+
                       return (
-                        <div key={callId} className="text-gray-500">
+                        <VStack spacing={'md'} key={toolCallId}>
+                          {renderMap && (
+                            <ClientOnly fallback="Loading location map...">
+                              <LocationWidget
+                                latitude={coordinates.latitude}
+                                longitude={coordinates.longitude}
+                              />
+                            </ClientOnly>
+                          )}
+                          <WeatherWidget data={result.data} />
+                        </VStack>
+                      );
+                    }
+                    if (toolName === 'weatherInfoWithCity') {
+                      return <WeatherWidget data={result.data} />;
+                    }
+                  } else {
+                    if (toolName === 'currentLocation') {
+                      return (
+                        <div key={toolCallId} className="text-gray-500">
                           <AiMessage content="Getting location..." />
                         </div>
                       );
-                    } else if (
-                      tool.state === 'result' &&
-                      typeof tool.result === 'string'
-                    ) {
+                    }
+                    if (toolName === 'weatherInfoWithCoordinates') {
                       return (
-                        <AiMessage
-                          key={callId}
-                          content={`Location: ${tool.result}`}
-                        />
+                        <div key={toolCallId} className="text-gray-500">
+                          <AiMessage content="Getting weather based on yoru location..." />
+                        </div>
                       );
                     }
-                  }
-                  if (tool.toolName === 'userLocation') {
-                    if (tool.state === 'call') {
+                    if (toolName === 'weatherInfoWithCity') {
                       return (
-                        <AiMessage
-                          key={callId}
-                          content={`Getting location...`}
-                        />
+                        <div key={toolCallId} className="text-gray-500">
+                          <AiMessage content="Getting weather..." />
+                        </div>
                       );
                     }
-                  }
-
-                  if (
-                    (tool.toolName === 'weatherInfoWithCity' ||
-                      tool.toolName === 'weatherInfoWithCoordinates') &&
-                    tool.state === 'result' &&
-                    tool.result &&
-                    tool.result.data
-                  ) {
-                    const mapArgs = tool.args as Coordinates;
-                    const coordinates = mapArgs.coordinates;
-                    const renderMap =
-                      coordinates?.latitude !== undefined &&
-                      coordinates?.longitude !== undefined;
-
-                    return (
-                      <VStack spacing={'md'} key={callId}>
-                        {renderMap && (
-                          <ClientOnly fallback="Loading location map...">
-                            <LocationWidget
-                              latitude={coordinates.latitude}
-                              longitude={coordinates.longitude}
-                            />
-                          </ClientOnly>
-                        )}
-                        <WeatherWidget data={tool.result.data} />
-                      </VStack>
-                    );
                   }
                 }
-
-                return null;
               })}
             </div>
           </React.Fragment>

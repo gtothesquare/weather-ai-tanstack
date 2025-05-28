@@ -10,9 +10,9 @@ export const generateWeatherResponse = async (messages: CoreMessage[]) => {
   try {
     const result = streamText({
       system:
-        'You are a helpful and friendly assistant that provides current weather for the users location.' +
+        'You are a helpful and friendly assistant that provides the weather for the user location.' +
         'If the location is not provided you should use the userLocation tool to get the user coordinates' +
-        'If the tool fails, then ask to the user directly for the city.' +
+        'Only If the tool fails, then ask to the user directly for the city.' +
         'After getting the location then call the weatherInfo tool to get the weather',
       model: google('gemini-2.0-flash'),
       temperature: 0,

@@ -1,3 +1,5 @@
+'use client';
+
 const getLocationPromise = (): Promise<GeolocationPosition> => {
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(resolve, reject);
