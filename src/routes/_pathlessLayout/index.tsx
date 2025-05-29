@@ -8,6 +8,7 @@ import { getUserLocationBrowser } from '~/features/location/utils/getUserLocatio
 
 export const Route = createFileRoute('/_pathlessLayout/')({
   component: Home,
+  ssr: false,
 });
 
 export default function Home() {

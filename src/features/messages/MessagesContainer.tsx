@@ -1,12 +1,10 @@
-'use client';
-import React, { lazy, useEffect, useRef } from 'react';
+import React, { lazy, Suspense, useEffect, useRef } from 'react';
 import { Message } from '@ai-sdk/react';
 import { WeatherWidget } from '../weather/components/WeatherWidget';
 import { twMerge } from 'tailwind-merge';
 import { UserMessage } from './components/UserMessage';
 import { AiMessage } from './components/AIMessage';
-import { ClientOnly } from '@tanstack/react-router';
-import { VStack } from '~/components/ui';
+import { Alert, VStack } from '~/components/ui';
 import { Coordinates } from '~/features/weather/types';
 
 const LocationWidget = lazy(() => import('../location/LocationWidget'));
@@ -16,19 +14,16 @@ interface Props {
   status: 'submitted' | 'streaming' | 'ready' | 'error';
 }
 
-export const MessagesContainer = ({ messages, status }: Props) => {
+export const MessagesContainer = ({ messages }: Props) => {
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  console.log('---');
-  console.log(messages);
-  console.log('---');
   return (
     <div className="flex flex-col min-w-0 gap-6 flex-1 overflow-y-auto pt-4">
-      {messages.map((message, index) => {
+      {messages.map((message) => {
         return (
           <React.Fragment key={message.id}>
             <div
@@ -41,12 +36,7 @@ export const MessagesContainer = ({ messages, status }: Props) => {
                 <UserMessage content={message.content} />
               )}
               {message.role === 'assistant' && (
-                <AiMessage
-                  content={message.content}
-                  isLoading={
-                    status === 'submitted' && messages.length - 1 === index
-                  }
-                />
+                <AiMessage content={message.content} />
               )}
             </div>
 
@@ -65,19 +55,27 @@ export const MessagesContainer = ({ messages, status }: Props) => {
                         coordinates?.latitude !== undefined &&
                         coordinates?.longitude !== undefined;
 
-                      return (
-                        <VStack spacing={'md'} key={toolCallId}>
-                          {renderMap && (
-                            <ClientOnly fallback="Loading location map...">
-                              <LocationWidget
-                                latitude={coordinates.latitude}
-                                longitude={coordinates.longitude}
-                              />
-                            </ClientOnly>
-                          )}
-                          <WeatherWidget data={result.data} />
-                        </VStack>
-                      );
+                      if (result.success) {
+                        return (
+                          <VStack spacing={'md'} key={toolCallId}>
+                            {renderMap && (
+                              <Suspense fallback="Loading location map...">
+                                <LocationWidget
+                                  latitude={coordinates.latitude}
+                                  longitude={coordinates.longitude}
+                                />
+                              </Suspense>
+                            )}
+                            <WeatherWidget data={result.data} />
+                          </VStack>
+                        );
+                      } else {
+                        return (
+                          <div key={toolCallId}>
+                            <Alert>{result.error}</Alert>
+                          </div>
+                        );
+                      }
                     }
                     if (toolName === 'weatherInfoWithCity') {
                       return <WeatherWidget data={result.data} />;
@@ -86,14 +84,20 @@ export const MessagesContainer = ({ messages, status }: Props) => {
                     if (toolName === 'currentLocation') {
                       return (
                         <div key={toolCallId} className="text-gray-500">
-                          <AiMessage content="Getting location..." />
+                          <AiMessage
+                            isLoading={true}
+                            content="Getting location..."
+                          />
                         </div>
                       );
                     }
                     if (toolName === 'weatherInfoWithCoordinates') {
                       return (
                         <div key={toolCallId} className="text-gray-500">
-                          <AiMessage content="Getting weather based on yoru location..." />
+                          <AiMessage
+                            isLoading={true}
+                            content="Getting weather based on yoru location..."
+                          />
                         </div>
                       );
                     }

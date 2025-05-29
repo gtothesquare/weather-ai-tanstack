@@ -16,8 +16,10 @@ export const locationSchema = z.object({
 });
 
 export const coordinatesSchema = z.object({
-  coordinates: z.object({
-    latitude: z.number().describe('Location latitude coordinate'),
-    longitude: z.number().describe('location longitude coordinate'),
-  }),
+  coordinates: z
+    .object({
+      latitude: z.number().describe('Location latitude coordinate'),
+      longitude: z.number().describe('location longitude coordinate'),
+    })
+    .optional(),
 });
