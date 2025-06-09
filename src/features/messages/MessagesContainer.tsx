@@ -5,7 +5,7 @@ import { twMerge } from 'tailwind-merge';
 import { UserMessage } from './components/UserMessage';
 import { AiMessage } from './components/AIMessage';
 import { Alert, VStack } from '~/components/ui';
-import { Coordinates } from '~/features/weather/types';
+import { Coordinates, WeatherData } from '~/features/weather/types';
 
 const LocationWidget = lazy(() => import('../location/LocationWidget'));
 
@@ -56,6 +56,7 @@ export const MessagesContainer = ({ messages }: Props) => {
                         coordinates?.longitude !== undefined;
 
                       if (result.success) {
+                        const data = result.data as WeatherData;
                         return (
                           <VStack spacing={'md'} key={toolCallId}>
                             {renderMap && (
@@ -66,7 +67,10 @@ export const MessagesContainer = ({ messages }: Props) => {
                                 />
                               </Suspense>
                             )}
-                            <WeatherWidget data={result.data} />
+                            <WeatherWidget
+                              weatherData={data.current}
+                              location={data.location}
+                            />
                           </VStack>
                         );
                       } else {
@@ -78,7 +82,13 @@ export const MessagesContainer = ({ messages }: Props) => {
                       }
                     }
                     if (toolName === 'weatherInfoWithCity') {
-                      return <WeatherWidget data={result.data} />;
+                      const data = result.data as WeatherData;
+                      return (
+                        <WeatherWidget
+                          weatherData={data.current}
+                          location={data.location}
+                        />
+                      );
                     }
                   } else {
                     if (toolName === 'currentLocation') {

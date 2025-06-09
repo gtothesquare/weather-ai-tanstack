@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
-export const weatherSchema = z.object({
+export const currentWeatherSchema = z.object({
+  time: z.date(),
   weatherCode: z.number(),
   temperature: z.number(),
   feelsLike: z.number(),
@@ -8,6 +9,19 @@ export const weatherSchema = z.object({
   windSpeed: z.number(),
   windGust: z.number(),
   conditions: z.string(),
+});
+
+export const dailyWeatherSchema = z.object({
+  timeValues: z.array(z.date()),
+  weatherCodeValues: z.array(z.number()),
+  temperatureMaxValues: z.array(z.number()),
+  temperatureMinValues: z.array(z.number()),
+  conditionValues: z.array(z.string()),
+});
+
+export const weatherSchema = z.object({
+  current: currentWeatherSchema,
+  daily: dailyWeatherSchema,
   location: z.string(),
 });
 

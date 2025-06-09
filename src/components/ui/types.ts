@@ -1,5 +1,3 @@
-import { ThemeConfig } from 'tailwindcss/types/config';
-
 export type Size = 'xxs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
 export type JustifyContent =
   | 'start'

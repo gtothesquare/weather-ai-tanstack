@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Link} from '@tanstack/react-router';
+import { Link } from '@tanstack/react-router';
 import { twMerge } from 'tailwind-merge';
 
 interface Props {

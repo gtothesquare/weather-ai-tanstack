@@ -2,13 +2,15 @@ import { WeatherIcon } from './WeatherIcon';
 import { VStack } from '~/components/ui/VStack';
 import { HStack } from '~/components/ui/HStack';
 import { Card, CardContent } from '~/components/sui/card';
-import { WeatherData } from '../types';
+import { WeatherDataCurrent } from '../types';
 
 interface Props {
-  data: WeatherData;
+  weatherData: WeatherDataCurrent;
+  location?: string;
 }
 
-export const WeatherWidget = ({ data }: Props) => {
+export const WeatherWidget = ({ weatherData, location }: Props) => {
+  const { temperature, weatherCode } = weatherData;
   return (
     <Card>
       <CardContent>
@@ -16,16 +18,16 @@ export const WeatherWidget = ({ data }: Props) => {
           <VStack justify="center">
             <div className="w-20">
               <WeatherIcon
-                weatherCode={data.weatherCode}
+                weatherCode={weatherCode}
                 lucideProps={{ color: 'orange', size: 'xl' }}
               />
             </div>
           </VStack>
-          <span className="font-bold text-6xl text-slate-600">{`${data.temperature}°`}</span>
+          <span className="font-bold text-6xl text-slate-600">{`${temperature}°`}</span>
         </HStack>
-        <h1 className="text-slate-600 text-xl font-semibold">
-          {data.location}
-        </h1>
+        {location && (
+          <h1 className="text-slate-600 text-xl font-semibold">{location}</h1>
+        )}
       </CardContent>
     </Card>
   );

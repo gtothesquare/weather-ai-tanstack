@@ -1,10 +1,5 @@
 import { ReactNode } from 'react';
-import {
-  AlignItems,
-  JustifyContent,
-  Size,
-  Wrap,
-} from '~/components/ui/types';
+import { AlignItems, JustifyContent, Size, Wrap } from '~/components/ui/types';
 import { BaseBox } from '~/components/ui/BaseBox';
 
 interface Props {

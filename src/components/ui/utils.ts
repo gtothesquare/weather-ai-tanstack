@@ -6,8 +6,6 @@ import {
   Wrap,
 } from '~/components/ui/types';
 
-import { DefaultColors } from 'tailwindcss/types/generated/colors';
-
 export const getPadding = (size?: Size) => {
   switch (size) {
     case 'xxs':
