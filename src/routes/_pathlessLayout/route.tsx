@@ -1,19 +1,14 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router';
-import { Header } from '~/components/layouts/Header';
-import { Footer } from '~/components/layouts/Footer';
+import { PageLayout } from '~/components/layouts/PageLayout';
 
 export const Route = createFileRoute('/_pathlessLayout')({
-  component: LayoutComponent,
+  component: Layout,
 });
 
-function LayoutComponent() {
+function Layout() {
   return (
-    <>
-      <Header />
-      <main className="flex flex-col grow inset-shadow-xs bg-pattern">
-        <Outlet />
-      </main>
-      <Footer />
-    </>
+    <PageLayout withPattern={true}>
+      <Outlet />
+    </PageLayout>
   );
 }

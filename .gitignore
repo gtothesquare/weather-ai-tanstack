@@ -22,3 +22,5 @@ yarn.lock
 /blob-report/
 /playwright/.cache/
 *storybook.log
+
+.tanstack
