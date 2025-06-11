@@ -7,7 +7,7 @@ export const Header = () => {
         <HStack justify="between" align="center">
           <h1 className="text-3xl py-2 font-light text-gray-100">
             <HStack align={'center'} spacing="sm">
-              <img alt="logo" className="h-8" src="/public/logo.png" />
+              <img alt="logo" className="h-8" src="/logo.png" />
               <a href={'/'}>Weather Chat</a>
             </HStack>
           </h1>
