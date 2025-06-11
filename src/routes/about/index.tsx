@@ -10,7 +10,7 @@ export default function About() {
   return (
     <Container>
       <VStack spacing="md">
-        <Heading>About</Heading>
+        <Heading variant="h1">About</Heading>
         <Text as="p">
           About The goal of this project is to investigate how to build ui
           components that renders message from LLMs using "tools". So continuous
