@@ -11,7 +11,13 @@ interface Props {
 
 export const VStack = ({ spacing, align, justify, children }: Props) => {
   return (
-    <BaseBox flex="column" align={align} justify={justify} spacingY={spacing}>
+    <BaseBox
+      flex="column"
+      align={align}
+      justify={justify}
+      spacingY={spacing}
+      className="w-full"
+    >
       {children}
     </BaseBox>
   );

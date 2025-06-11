@@ -18,6 +18,7 @@ export const HStack = ({ children, spacing, align, justify, wrap }: Props) => {
       justify={justify}
       spacingX={spacing}
       wrap={wrap}
+      className="w-full"
     >
       {children}
     </BaseBox>

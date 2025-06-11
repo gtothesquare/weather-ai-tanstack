@@ -11,14 +11,28 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as AboutRouteImport } from './routes/about/route'
 import { Route as PathlessLayoutRouteImport } from './routes/_pathlessLayout/route'
+import { Route as AboutIndexImport } from './routes/about/index'
 import { Route as PathlessLayoutIndexImport } from './routes/_pathlessLayout/index'
 
 // Create/Update Routes
 
+const AboutRouteRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const PathlessLayoutRouteRoute = PathlessLayoutRouteImport.update({
   id: '/_pathlessLayout',
   getParentRoute: () => rootRoute,
+} as any)
+
+const AboutIndexRoute = AboutIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AboutRouteRoute,
 } as any)
 
 const PathlessLayoutIndexRoute = PathlessLayoutIndexImport.update({
@@ -38,12 +52,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PathlessLayoutRouteImport
       parentRoute: typeof rootRoute
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRoute
+    }
     '/_pathlessLayout/': {
       id: '/_pathlessLayout/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof PathlessLayoutIndexImport
       parentRoute: typeof PathlessLayoutRouteImport
+    }
+    '/about/': {
+      id: '/about/'
+      path: '/'
+      fullPath: '/about/'
+      preLoaderRoute: typeof AboutIndexImport
+      parentRoute: typeof AboutRouteImport
     }
   }
 }
@@ -61,36 +89,60 @@ const PathlessLayoutRouteRouteChildren: PathlessLayoutRouteRouteChildren = {
 const PathlessLayoutRouteRouteWithChildren =
   PathlessLayoutRouteRoute._addFileChildren(PathlessLayoutRouteRouteChildren)
 
+interface AboutRouteRouteChildren {
+  AboutIndexRoute: typeof AboutIndexRoute
+}
+
+const AboutRouteRouteChildren: AboutRouteRouteChildren = {
+  AboutIndexRoute: AboutIndexRoute,
+}
+
+const AboutRouteRouteWithChildren = AboutRouteRoute._addFileChildren(
+  AboutRouteRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
   '': typeof PathlessLayoutRouteRouteWithChildren
+  '/about': typeof AboutRouteRouteWithChildren
   '/': typeof PathlessLayoutIndexRoute
+  '/about/': typeof AboutIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof PathlessLayoutIndexRoute
+  '/about': typeof AboutIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_pathlessLayout': typeof PathlessLayoutRouteRouteWithChildren
+  '/about': typeof AboutRouteRouteWithChildren
   '/_pathlessLayout/': typeof PathlessLayoutIndexRoute
+  '/about/': typeof AboutIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/'
+  fullPaths: '' | '/about' | '/' | '/about/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/_pathlessLayout' | '/_pathlessLayout/'
+  to: '/' | '/about'
+  id:
+    | '__root__'
+    | '/_pathlessLayout'
+    | '/about'
+    | '/_pathlessLayout/'
+    | '/about/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   PathlessLayoutRouteRoute: typeof PathlessLayoutRouteRouteWithChildren
+  AboutRouteRoute: typeof AboutRouteRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
   PathlessLayoutRouteRoute: PathlessLayoutRouteRouteWithChildren,
+  AboutRouteRoute: AboutRouteRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -103,7 +155,8 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/_pathlessLayout"
+        "/_pathlessLayout",
+        "/about"
       ]
     },
     "/_pathlessLayout": {
@@ -112,9 +165,19 @@ export const routeTree = rootRoute
         "/_pathlessLayout/"
       ]
     },
+    "/about": {
+      "filePath": "about/route.tsx",
+      "children": [
+        "/about/"
+      ]
+    },
     "/_pathlessLayout/": {
       "filePath": "_pathlessLayout/index.tsx",
       "parent": "/_pathlessLayout"
+    },
+    "/about/": {
+      "filePath": "about/index.tsx",
+      "parent": "/about"
     }
   }
 }
