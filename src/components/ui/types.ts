@@ -12,3 +12,5 @@ export type Wrap = 'wrap' | 'nowrap' | 'wrap-reverse';
 export type Border = 'none' | 'square' | 'rounded';
 export type Background = string;
 export type Foreground = string;
+export type Width = 'full' | 'auto';
+export type Height = 'full' | 'auto';

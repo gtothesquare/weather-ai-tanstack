@@ -1,5 +1,12 @@
 import { ReactNode } from 'react';
-import { AlignItems, JustifyContent, Size, Wrap } from '~/components/ui/types';
+import {
+  AlignItems,
+  Height,
+  JustifyContent,
+  Size,
+  Width,
+  Wrap,
+} from '~/components/ui/types';
 import { BaseBox } from '~/components/ui/BaseBox';
 
 interface Props {
@@ -8,6 +15,8 @@ interface Props {
   align?: AlignItems;
   justify?: JustifyContent;
   wrap?: Wrap;
+  width?: Width;
+  height?: Height;
 }
 
 export const HStack = ({ children, spacing, align, justify, wrap }: Props) => {

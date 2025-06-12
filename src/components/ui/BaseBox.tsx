@@ -5,8 +5,10 @@ import {
   Border,
   Flex,
   Foreground,
+  Height,
   JustifyContent,
   Size,
+  Width,
   Wrap,
 } from '~/components/ui/types';
 
@@ -14,6 +16,7 @@ import {
   getAlignItems,
   getFlex,
   getFlexWrap,
+  getHeight,
   getHorizontalSpacing,
   getJustifyContent,
   getPadding,
@@ -43,6 +46,8 @@ export interface BaseBoxProps {
   border?: Border;
   bg?: Background;
   fg?: Foreground;
+  height?: Height;
+  width?: Width;
   children?: ReactNode;
   className?: string;
 }
@@ -61,6 +66,8 @@ export const BaseBox = (props: BaseBoxProps) => {
   const spacingY = getVerticalSpacing(props.spacingY);
   const spacingX = getHorizontalSpacing(props.spacingX);
   const wrap = getFlexWrap(props.wrap);
+  const height = getHeight(props.height);
+  const width = getHeight(props.width);
 
   return (
     <div
@@ -78,6 +85,8 @@ export const BaseBox = (props: BaseBoxProps) => {
         spacingX,
         spacingY,
         wrap,
+        width,
+        height,
         props.bg,
         props.fg,
         props.className

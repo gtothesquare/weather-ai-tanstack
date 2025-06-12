@@ -6,6 +6,7 @@ import { UserMessage } from './components/UserMessage';
 import { AiMessage } from './components/AIMessage';
 import { Alert, VStack } from '~/components/ui';
 import { Coordinates, WeatherData } from '~/features/weather/types';
+import { AiLoadingIndicator } from './components/AiLoadingIndicator';
 
 const LocationWidget = lazy(() => import('../location/LocationWidget'));
 
@@ -14,7 +15,7 @@ interface Props {
   status: 'submitted' | 'streaming' | 'ready' | 'error';
 }
 
-export const MessagesContainer = ({ messages }: Props) => {
+export const MessagesContainer = ({ messages, status }: Props) => {
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -39,7 +40,6 @@ export const MessagesContainer = ({ messages }: Props) => {
                 <AiMessage content={message.content} />
               )}
             </div>
-
             <div className="w-full text-sm flex mx-auto max-w-3xl">
               {message.parts?.map((part) => {
                 if (part.type === 'tool-invocation') {
@@ -94,20 +94,14 @@ export const MessagesContainer = ({ messages }: Props) => {
                     if (toolName === 'currentLocation') {
                       return (
                         <div key={toolCallId} className="text-gray-500">
-                          <AiMessage
-                            isLoading={true}
-                            content="Getting location..."
-                          />
+                          <AiMessage content="Getting location..." />
                         </div>
                       );
                     }
                     if (toolName === 'weatherInfoWithCoordinates') {
                       return (
                         <div key={toolCallId} className="text-gray-500">
-                          <AiMessage
-                            isLoading={true}
-                            content="Getting weather based on yoru location..."
-                          />
+                          <AiMessage content="Getting weather based on yoru location..." />
                         </div>
                       );
                     }
@@ -125,6 +119,9 @@ export const MessagesContainer = ({ messages }: Props) => {
           </React.Fragment>
         );
       })}
+      <div className="w-full flex mx-auto max-w-3xl">
+        {status === 'submitted' && <AiLoadingIndicator />}
+      </div>
       <div className="mb-10" ref={bottomRef} />
     </div>
   );

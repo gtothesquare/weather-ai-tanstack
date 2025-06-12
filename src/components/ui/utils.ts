@@ -1,8 +1,10 @@
 import {
   AlignItems,
   Flex,
+  Height,
   JustifyContent,
   Size,
+  Width,
   Wrap,
 } from '~/components/ui/types';
 
@@ -211,4 +213,18 @@ export const getFlexWrap = (wrap?: Wrap) => {
     default:
       return '';
   }
+};
+
+export const getWidth = (width?: Width) => {
+  if (width === 'full') {
+    return 'w-full';
+  }
+  return;
+};
+
+export const getHeight = (height?: Height) => {
+  if (height === 'full') {
+    return 'w-full';
+  }
+  return;
 };

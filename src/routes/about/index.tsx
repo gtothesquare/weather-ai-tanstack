@@ -9,7 +9,7 @@ export const Route = createFileRoute('/about/')({
 export default function About() {
   return (
     <Container>
-      <VStack spacing="md">
+      <VStack spacing="md" width="full">
         <Heading variant="h1">About</Heading>
         <Text as="p">
           About The goal of this project is to investigate how to build ui
