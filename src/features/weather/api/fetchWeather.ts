@@ -3,6 +3,12 @@ import { Coordinates, LocationParams, WeatherData } from '../types';
 import { fetchWeatherApi } from 'openmeteo';
 import { fetchGeoCodeLocation } from './fetchGeoCodeLocation';
 import { fetchReverseGeoCodeLocation } from '~/features/weather/api/fetchReverseGeoCodeLocation';
+import {
+  WEATHER_CURRENT_KEYS,
+  WEATHER_CURRENT_PARAMS,
+  WEATHER_DAILY_KEYS,
+  WEATHER_DAILY_PARAMS,
+} from '~/features/weather/api/constants';
 
 type FetchWeatherParams = LocationParams | Coordinates;
 
@@ -41,15 +47,8 @@ export const fetchWeather = async (
   const weatherParams = {
     latitude: lat,
     longitude: lon,
-    daily: ['weather_code', 'temperature_2m_max', 'temperature_2m_min'],
-    current: [
-      'temperature_2m',
-      'weather_code',
-      'apparent_temperature',
-      'relative_humidity_2m',
-      'wind_speed_10m',
-      'wind_gusts_10m',
-    ],
+    daily: WEATHER_DAILY_KEYS,
+    current: WEATHER_CURRENT_KEYS,
     timezone: 'auto',
   };
 
@@ -70,19 +69,37 @@ export const fetchWeather = async (
   const longitude = response.longitude();*/
 
   // Note: The order of weather variables in the URL query and the indices below need to match!
-  const currentWeatherCode = current.variables(1)!.value();
-  const dailyWeatherCodes = Array.from(daily.variables(1)!.valuesArray()!);
+  const currentWeatherCode = current
+    .variables(WEATHER_CURRENT_PARAMS.weather_code.index)!
+    .value();
+  const dailyWeatherCodes = Array.from(
+    daily.variables(WEATHER_DAILY_PARAMS.weather_code.index)!.valuesArray()!
+  );
 
   return {
     location: city ?? '',
     current: {
       time: new Date((Number(current.time()) + utcOffsetSeconds) * 1000),
-      temperature: toIntArray(current.variables(0)!.value()),
+      temperature: toIntArray(
+        current.variables(WEATHER_CURRENT_PARAMS.temperature_2m.index)!.value()
+      ),
       weatherCode: currentWeatherCode,
-      feelsLike: toIntArray(current.variables(2)!.value()),
-      humidity: toIntArray(current.variables(3)!.value()),
-      windSpeed: toIntArray(current.variables(4)!.value()),
-      windGust: toIntArray(current.variables(5)!.value()),
+      feelsLike: toIntArray(
+        current
+          .variables(WEATHER_CURRENT_PARAMS.apparent_temperature.index)!
+          .value()
+      ),
+      humidity: toIntArray(
+        current
+          .variables(WEATHER_CURRENT_PARAMS.relative_humidity_2m.index)!
+          .value()
+      ),
+      windSpeed: toIntArray(
+        current.variables(WEATHER_CURRENT_PARAMS.wind_speed_10m.index)!.value()
+      ),
+      windGust: toIntArray(
+        current.variables(WEATHER_CURRENT_PARAMS.wind_gusts_10m.index)!.value()
+      ),
       conditions: getWeatherCondition(currentWeatherCode),
     },
     daily: {
@@ -98,12 +115,16 @@ export const fetchWeather = async (
           )
       ),
       weatherCodeValues: dailyWeatherCodes,
-      temperatureMaxValues: Array.from(daily.variables(1)!.valuesArray()!).map(
-        toIntArray
-      ),
-      temperatureMinValues: Array.from(daily.variables(2)!.valuesArray()!).map(
-        toIntArray
-      ),
+      temperatureMaxValues: Array.from(
+        daily
+          .variables(WEATHER_DAILY_PARAMS.temperature_2m_max.index)!
+          .valuesArray()!
+      ).map(toIntArray),
+      temperatureMinValues: Array.from(
+        daily
+          .variables(WEATHER_DAILY_PARAMS.temperature_2m_min.index)!
+          .valuesArray()!
+      ).map(toIntArray),
       conditionValues: dailyWeatherCodes.map((code) => {
         return getWeatherCondition(code);
       }),

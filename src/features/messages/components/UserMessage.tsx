@@ -1,4 +1,5 @@
 import { MessageCard } from './MessageCard';
+import { Text } from '~/components/ui';
 
 interface Props {
   content: string;
@@ -7,8 +8,7 @@ interface Props {
 export const UserMessage = ({ content }: Props) => {
   return (
     <MessageCard variant={'user'}>
-      {'You: '}
-      {content}
+      <Text>{`You: ${content}`}</Text>
     </MessageCard>
   );
 };

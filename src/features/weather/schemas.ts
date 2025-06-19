@@ -12,7 +12,7 @@ export const currentWeatherSchema = z.object({
 });
 
 export const dailyWeatherSchema = z.object({
-  timeValues: z.array(z.date()),
+  timeValues: z.array(z.string()),
   weatherCodeValues: z.array(z.number()),
   temperatureMaxValues: z.array(z.number()),
   temperatureMinValues: z.array(z.number()),

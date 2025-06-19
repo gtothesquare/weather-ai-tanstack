@@ -1,12 +1,13 @@
 import React, { lazy, Suspense, useEffect, useRef } from 'react';
 import { Message } from '@ai-sdk/react';
-import { WeatherWidget } from '../weather/components/WeatherWidget';
+import { WeatherCurrentWidget } from '../weather/components/WeatherCurrentWidget';
 import { twMerge } from 'tailwind-merge';
 import { UserMessage } from './components/UserMessage';
 import { AiMessage } from './components/AIMessage';
 import { Alert, VStack } from '~/components/ui';
 import { Coordinates, WeatherData } from '~/features/weather/types';
 import { AiLoadingIndicator } from './components/AiLoadingIndicator';
+import { WeatherDailyWidget } from '~/features/weather/components/WeatherDailyWidget';
 
 const LocationWidget = lazy(() => import('../location/LocationWidget'));
 
@@ -67,8 +68,12 @@ export const MessagesContainer = ({ messages, status }: Props) => {
                                 />
                               </Suspense>
                             )}
-                            <WeatherWidget
+                            <WeatherCurrentWidget
                               weatherData={data.current}
+                              location={data.location}
+                            />
+                            <WeatherDailyWidget
+                              weatherData={data.daily}
                               location={data.location}
                             />
                           </VStack>
@@ -84,10 +89,16 @@ export const MessagesContainer = ({ messages, status }: Props) => {
                     if (toolName === 'weatherInfoWithCity') {
                       const data = result.data as WeatherData;
                       return (
-                        <WeatherWidget
-                          weatherData={data.current}
-                          location={data.location}
-                        />
+                        <VStack spacing="md" key={toolCallId}>
+                          <WeatherCurrentWidget
+                            weatherData={data.current}
+                            location={data.location}
+                          />
+                          <WeatherDailyWidget
+                            weatherData={data.daily}
+                            location={data.location}
+                          />
+                        </VStack>
                       );
                     }
                   } else {

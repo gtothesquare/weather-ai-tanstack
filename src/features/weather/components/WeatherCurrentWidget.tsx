@@ -9,7 +9,7 @@ interface Props {
   location?: string;
 }
 
-export const WeatherWidget = ({ weatherData, location }: Props) => {
+export const WeatherCurrentWidget = ({ weatherData, location }: Props) => {
   const { temperature, weatherCode } = weatherData;
   return (
     <Card>

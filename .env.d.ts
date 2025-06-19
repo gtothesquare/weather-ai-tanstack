@@ -4,3 +4,5 @@ declare namespace NodeJS {
     readonly GOOGLE_GENERATIVE_AI_API_KEY: string;
   }
 }
+
+declare module '*.md';
