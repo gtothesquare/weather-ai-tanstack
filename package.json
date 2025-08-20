@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build && tsc --noEmit",
-    "lint": "pnpm eslint . --fix",
+    "lint": "pnpm eslint .",
     "tsc": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
     "start": "node .output/server/index.mjs",
