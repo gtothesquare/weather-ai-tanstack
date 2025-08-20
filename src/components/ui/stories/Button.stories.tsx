@@ -19,5 +19,5 @@ type Story = StoryObj<typeof meta>;
 export const PrimaryButton: Story = { args: {} };
 
 export const SecondaryButton: Story = { args: { variant: 'secondary' } };
-export const DangerButton: Story = { args: { variant: 'danger' } };
-export const SuccessButton: Story = { args: { variant: 'success' } };
+export const DangerButton: Story = { args: { variant: 'ghost' } };
+export const SuccessButton: Story = { args: { variant: 'outline' } };

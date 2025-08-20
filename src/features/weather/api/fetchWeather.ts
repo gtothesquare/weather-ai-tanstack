@@ -107,12 +107,11 @@ export const fetchWeather = async (
         ...Array(
           (Number(daily.timeEnd()) - Number(daily.time())) / daily.interval()
         ),
-      ].map(
-        (_, i) =>
-          new Date(
-            (Number(daily.time()) + i * daily.interval() + utcOffsetSeconds) *
-              1000
-          )
+      ].map((_, i) =>
+        new Date(
+          (Number(daily.time()) + i * daily.interval() + utcOffsetSeconds) *
+            1000
+        ).toLocaleString()
       ),
       weatherCodeValues: dailyWeatherCodes,
       temperatureMaxValues: Array.from(
