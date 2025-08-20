@@ -1,10 +1,20 @@
 import React from 'react';
 import { Container, Heading, Text, VStack } from '~/components/ui';
 import { createFileRoute } from '@tanstack/react-router';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 export const Route = createFileRoute('/about/')({
   component: About,
 });
+
+const todoMd = `
+ - [x] Fix the unknown conditions message
+ - [x] Render a widget for the daily forecast
+ - [ ] Suggest a song based on the forecast
+ - [ ] Add a temperature range to the forecast widget
+ - [ ] Improve when to render the widgets, right now they are always rendered if I want just the forecast for tomorrow.
+`;
 
 export default function About() {
   return (
@@ -18,22 +28,13 @@ export default function About() {
           it uses different APIs to get the location to generate a weather
           forecast and a map.
         </Text>
-        <Heading variant="h2">To-do</Heading>
-        <ul className="list-disc">
-          <li>
-            <Text>Fix the unknown conditions message</Text>
-          </li>
-          <li>
-            <Text>Render a widget for the daily forecast</Text>
-          </li>
-          <li>
-            <Text>Suggest a song based on the forecast</Text>
-          </li>
-        </ul>
         <Heading variant="h2">Stack</Heading>
         <Text as="p">
-          Vercel AI sdk, Tanstack Start, Tailwind CSS, Storybook, Lucide icons.
+          Vercel AI sdk, Tanstack Start, Shadcn UI, Tailwind CSS, Storybook,
+          Lucide icons.
         </Text>
+        <Heading variant="h2">To-do</Heading>
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>{todoMd}</ReactMarkdown>
       </VStack>
     </Container>
   );

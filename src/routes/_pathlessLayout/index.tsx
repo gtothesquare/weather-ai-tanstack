@@ -3,7 +3,7 @@ import { useChat } from '@ai-sdk/react';
 import { Alert } from '~/components/ui/Alert';
 import { MessagesContainer } from '~/features/messages/MessagesContainer';
 import { KeyboardEvent } from 'react';
-import { Textarea } from '~/components/sui/textarea';
+import { Textarea } from '~/components/ui/Textarea';
 import { getUserLocationBrowser } from '~/features/location/utils/getUserLocationBrowser';
 
 export const Route = createFileRoute('/_pathlessLayout/')({

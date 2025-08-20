@@ -1,7 +1,7 @@
 import { WeatherIcon } from './WeatherIcon';
 import { VStack } from '~/components/ui/VStack';
 import { HStack } from '~/components/ui/HStack';
-import { Card, CardContent } from '~/components/sui/card';
+import { Card, CardContent } from '~/components/ui/Card';
 import { WeatherDataCurrent } from '../types';
 
 interface Props {
