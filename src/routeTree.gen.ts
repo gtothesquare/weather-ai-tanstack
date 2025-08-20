@@ -8,75 +8,140 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-// Import Routes
+import { createServerRootRoute } from '@tanstack/react-start/server'
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as AboutRouteImport } from './routes/about/route'
-import { Route as PathlessLayoutRouteImport } from './routes/_pathlessLayout/route'
-import { Route as AboutIndexImport } from './routes/about/index'
-import { Route as PathlessLayoutIndexImport } from './routes/_pathlessLayout/index'
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as AboutRouteRouteImport } from './routes/about/route'
+import { Route as PathlessLayoutRouteRouteImport } from './routes/_pathlessLayout/route'
+import { Route as AboutIndexRouteImport } from './routes/about/index'
+import { Route as PathlessLayoutIndexRouteImport } from './routes/_pathlessLayout/index'
+import { ServerRoute as ApiWeatherServerRouteImport } from './routes/api/weather'
 
-// Create/Update Routes
+const rootServerRouteImport = createServerRootRoute()
 
-const AboutRouteRoute = AboutRouteImport.update({
+const AboutRouteRoute = AboutRouteRouteImport.update({
   id: '/about',
   path: '/about',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const PathlessLayoutRouteRoute = PathlessLayoutRouteImport.update({
+const PathlessLayoutRouteRoute = PathlessLayoutRouteRouteImport.update({
   id: '/_pathlessLayout',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const AboutIndexRoute = AboutIndexImport.update({
+const AboutIndexRoute = AboutIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AboutRouteRoute,
 } as any)
-
-const PathlessLayoutIndexRoute = PathlessLayoutIndexImport.update({
+const PathlessLayoutIndexRoute = PathlessLayoutIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => PathlessLayoutRouteRoute,
 } as any)
+const ApiWeatherServerRoute = ApiWeatherServerRouteImport.update({
+  id: '/api/weather',
+  path: '/api/weather',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
 
-// Populate the FileRoutesByPath interface
+export interface FileRoutesByFullPath {
+  '/about': typeof AboutRouteRouteWithChildren
+  '/': typeof PathlessLayoutIndexRoute
+  '/about/': typeof AboutIndexRoute
+}
+export interface FileRoutesByTo {
+  '/': typeof PathlessLayoutIndexRoute
+  '/about': typeof AboutIndexRoute
+}
+export interface FileRoutesById {
+  __root__: typeof rootRouteImport
+  '/_pathlessLayout': typeof PathlessLayoutRouteRouteWithChildren
+  '/about': typeof AboutRouteRouteWithChildren
+  '/_pathlessLayout/': typeof PathlessLayoutIndexRoute
+  '/about/': typeof AboutIndexRoute
+}
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths: '/about' | '/' | '/about/'
+  fileRoutesByTo: FileRoutesByTo
+  to: '/' | '/about'
+  id:
+    | '__root__'
+    | '/_pathlessLayout'
+    | '/about'
+    | '/_pathlessLayout/'
+    | '/about/'
+  fileRoutesById: FileRoutesById
+}
+export interface RootRouteChildren {
+  PathlessLayoutRouteRoute: typeof PathlessLayoutRouteRouteWithChildren
+  AboutRouteRoute: typeof AboutRouteRouteWithChildren
+}
+export interface FileServerRoutesByFullPath {
+  '/api/weather': typeof ApiWeatherServerRoute
+}
+export interface FileServerRoutesByTo {
+  '/api/weather': typeof ApiWeatherServerRoute
+}
+export interface FileServerRoutesById {
+  __root__: typeof rootServerRouteImport
+  '/api/weather': typeof ApiWeatherServerRoute
+}
+export interface FileServerRouteTypes {
+  fileServerRoutesByFullPath: FileServerRoutesByFullPath
+  fullPaths: '/api/weather'
+  fileServerRoutesByTo: FileServerRoutesByTo
+  to: '/api/weather'
+  id: '__root__' | '/api/weather'
+  fileServerRoutesById: FileServerRoutesById
+}
+export interface RootServerRouteChildren {
+  ApiWeatherServerRoute: typeof ApiWeatherServerRoute
+}
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_pathlessLayout': {
-      id: '/_pathlessLayout'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof PathlessLayoutRouteImport
-      parentRoute: typeof rootRoute
-    }
     '/about': {
       id: '/about'
       path: '/about'
       fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AboutRouteRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_pathlessLayout/': {
-      id: '/_pathlessLayout/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof PathlessLayoutIndexImport
-      parentRoute: typeof PathlessLayoutRouteImport
+    '/_pathlessLayout': {
+      id: '/_pathlessLayout'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof PathlessLayoutRouteRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/about/': {
       id: '/about/'
       path: '/'
       fullPath: '/about/'
-      preLoaderRoute: typeof AboutIndexImport
-      parentRoute: typeof AboutRouteImport
+      preLoaderRoute: typeof AboutIndexRouteImport
+      parentRoute: typeof AboutRouteRoute
+    }
+    '/_pathlessLayout/': {
+      id: '/_pathlessLayout/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof PathlessLayoutIndexRouteImport
+      parentRoute: typeof PathlessLayoutRouteRoute
     }
   }
 }
-
-// Create and export the route tree
+declare module '@tanstack/react-start/server' {
+  interface ServerFileRoutesByPath {
+    '/api/weather': {
+      id: '/api/weather'
+      path: '/api/weather'
+      fullPath: '/api/weather'
+      preLoaderRoute: typeof ApiWeatherServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+  }
+}
 
 interface PathlessLayoutRouteRouteChildren {
   PathlessLayoutIndexRoute: typeof PathlessLayoutIndexRoute
@@ -101,84 +166,16 @@ const AboutRouteRouteWithChildren = AboutRouteRoute._addFileChildren(
   AboutRouteRouteChildren,
 )
 
-export interface FileRoutesByFullPath {
-  '': typeof PathlessLayoutRouteRouteWithChildren
-  '/about': typeof AboutRouteRouteWithChildren
-  '/': typeof PathlessLayoutIndexRoute
-  '/about/': typeof AboutIndexRoute
-}
-
-export interface FileRoutesByTo {
-  '/': typeof PathlessLayoutIndexRoute
-  '/about': typeof AboutIndexRoute
-}
-
-export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/_pathlessLayout': typeof PathlessLayoutRouteRouteWithChildren
-  '/about': typeof AboutRouteRouteWithChildren
-  '/_pathlessLayout/': typeof PathlessLayoutIndexRoute
-  '/about/': typeof AboutIndexRoute
-}
-
-export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/about' | '/' | '/about/'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about'
-  id:
-    | '__root__'
-    | '/_pathlessLayout'
-    | '/about'
-    | '/_pathlessLayout/'
-    | '/about/'
-  fileRoutesById: FileRoutesById
-}
-
-export interface RootRouteChildren {
-  PathlessLayoutRouteRoute: typeof PathlessLayoutRouteRouteWithChildren
-  AboutRouteRoute: typeof AboutRouteRouteWithChildren
-}
-
 const rootRouteChildren: RootRouteChildren = {
   PathlessLayoutRouteRoute: PathlessLayoutRouteRouteWithChildren,
   AboutRouteRoute: AboutRouteRouteWithChildren,
 }
-
-export const routeTree = rootRoute
+export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/_pathlessLayout",
-        "/about"
-      ]
-    },
-    "/_pathlessLayout": {
-      "filePath": "_pathlessLayout/route.tsx",
-      "children": [
-        "/_pathlessLayout/"
-      ]
-    },
-    "/about": {
-      "filePath": "about/route.tsx",
-      "children": [
-        "/about/"
-      ]
-    },
-    "/_pathlessLayout/": {
-      "filePath": "_pathlessLayout/index.tsx",
-      "parent": "/_pathlessLayout"
-    },
-    "/about/": {
-      "filePath": "about/index.tsx",
-      "parent": "/about"
-    }
-  }
+const rootServerRouteChildren: RootServerRouteChildren = {
+  ApiWeatherServerRoute: ApiWeatherServerRoute,
 }
-ROUTE_MANIFEST_END */
+export const serverRouteTree = rootServerRouteImport
+  ._addFileChildren(rootServerRouteChildren)
+  ._addFileTypes<FileServerRouteTypes>()

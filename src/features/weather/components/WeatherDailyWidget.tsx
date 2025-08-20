@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent } from '~/components/sui/card';
+import { Card, CardContent } from '~/components/ui/Card';
 import { HStack, VStack } from '~/components/ui';
 import { WeatherDataDaily } from '~/features/weather/types';
 import { WeatherIcon } from '~/features/weather/components/WeatherIcon';
