@@ -11,7 +11,7 @@ export const Route = createFileRoute('/_pathlessLayout/')({
   ssr: false,
 });
 
-export default function Home() {
+function Home() {
   const { messages, input, handleInputChange, handleSubmit, error, status } =
     useChat({
       maxSteps: 5,
