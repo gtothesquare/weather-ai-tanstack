@@ -9,12 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as HealthRouteImport } from './routes/health'
 import { Route as AboutRouteRouteImport } from './routes/about/route'
 import { Route as PathlessLayoutRouteRouteImport } from './routes/_pathlessLayout/route'
 import { Route as AboutIndexRouteImport } from './routes/about/index'
 import { Route as PathlessLayoutIndexRouteImport } from './routes/_pathlessLayout/index'
 import { Route as ApiWeatherRouteImport } from './routes/api/weather'
 
+const HealthRoute = HealthRouteImport.update({
+  id: '/health',
+  path: '/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRouteRoute = AboutRouteRouteImport.update({
   id: '/about',
   path: '/about',
@@ -42,11 +48,13 @@ const ApiWeatherRoute = ApiWeatherRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/about': typeof AboutRouteRouteWithChildren
+  '/health': typeof HealthRoute
   '/api/weather': typeof ApiWeatherRoute
   '/': typeof PathlessLayoutIndexRoute
   '/about/': typeof AboutIndexRoute
 }
 export interface FileRoutesByTo {
+  '/health': typeof HealthRoute
   '/api/weather': typeof ApiWeatherRoute
   '/': typeof PathlessLayoutIndexRoute
   '/about': typeof AboutIndexRoute
@@ -55,19 +63,21 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_pathlessLayout': typeof PathlessLayoutRouteRouteWithChildren
   '/about': typeof AboutRouteRouteWithChildren
+  '/health': typeof HealthRoute
   '/api/weather': typeof ApiWeatherRoute
   '/_pathlessLayout/': typeof PathlessLayoutIndexRoute
   '/about/': typeof AboutIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/about' | '/api/weather' | '/' | '/about/'
+  fullPaths: '/about' | '/health' | '/api/weather' | '/' | '/about/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/api/weather' | '/' | '/about'
+  to: '/health' | '/api/weather' | '/' | '/about'
   id:
     | '__root__'
     | '/_pathlessLayout'
     | '/about'
+    | '/health'
     | '/api/weather'
     | '/_pathlessLayout/'
     | '/about/'
@@ -76,11 +86,19 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   PathlessLayoutRouteRoute: typeof PathlessLayoutRouteRouteWithChildren
   AboutRouteRoute: typeof AboutRouteRouteWithChildren
+  HealthRoute: typeof HealthRoute
   ApiWeatherRoute: typeof ApiWeatherRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/health': {
+      id: '/health'
+      path: '/health'
+      fullPath: '/health'
+      preLoaderRoute: typeof HealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -145,6 +163,7 @@ const AboutRouteRouteWithChildren = AboutRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   PathlessLayoutRouteRoute: PathlessLayoutRouteRouteWithChildren,
   AboutRouteRoute: AboutRouteRouteWithChildren,
+  HealthRoute: HealthRoute,
   ApiWeatherRoute: ApiWeatherRoute,
 }
 export const routeTree = rootRouteImport
