@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
-import { Card, CardContent } from '~/components/ui/Card';
+import { Card, CardContent } from '@yaip/yads-ui';
 import L from 'leaflet';
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
@@ -24,13 +24,14 @@ interface Props {
 function LocationWidget({ latitude, longitude }: Props) {
   const position = { lat: latitude, lng: longitude };
   return (
-    <Card>
-      <CardContent>
+    <Card className="w-full max-w-xl bg-card/68 shadow-sm ring-border/45 backdrop-blur-xl">
+      <CardContent className="pt-1">
         <MapContainer
-          style={{ height: '200px', width: '300px' }}
+          style={{ height: '200px', width: '100%' }}
           center={position}
           zoom={13}
           scrollWheelZoom={false}
+          className="rounded-lg"
         >
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           <Marker position={position}>

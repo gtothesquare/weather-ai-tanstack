@@ -1,23 +1,31 @@
-import React, { lazy, Suspense, useEffect, useRef } from 'react';
-import { Message } from '@ai-sdk/react';
-import { WeatherCurrentWidget } from '../weather/components/WeatherCurrentWidget';
+import React, { useEffect, useRef } from 'react';
+import { UIMessage } from '@tanstack/ai-react';
 import { twMerge } from 'tailwind-merge';
 import { UserMessage } from './components/UserMessage';
 import { AiMessage } from './components/AIMessage';
-import { Alert, VStack } from '~/components/ui';
-import { Coordinates, WeatherData } from '~/features/weather/types';
+import { Alert, AlertDescription, Stack } from '@yaip/yads-ui';
 import { AiLoadingIndicator } from './components/AiLoadingIndicator';
-import { WeatherDailyWidget } from '~/features/weather/components/WeatherDailyWidget';
-
-const LocationWidget = lazy(() => import('../location/LocationWidget'));
+import { WeatherWidgetRenderer } from './widgets/weatherWidget';
+import { weatherWidgetPayloadSchema } from '~/features/weather/widgetSchema';
 
 interface Props {
-  messages: Message[];
+  messages: UIMessage[];
   status: 'submitted' | 'streaming' | 'ready' | 'error';
+}
+
+function stripRenderedWidgetJson(content: string) {
+  return content
+    .replace(
+      /\{\s*"type"\s*:\s*"weather-forecast"[\s\S]*?"showMap"\s*:\s*(true|false)\s*\}/g,
+      ''
+    )
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
 }
 
 export const MessagesContainer = ({ messages, status }: Props) => {
   const bottomRef = useRef<HTMLDivElement | null>(null);
+  const isStreaming = status === 'submitted' || status === 'streaming';
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -26,6 +34,24 @@ export const MessagesContainer = ({ messages, status }: Props) => {
   return (
     <div className="flex flex-col min-w-0 gap-6 flex-1 overflow-y-auto pt-4">
       {messages.map((message) => {
+        const textContent = message.parts
+          .filter(
+            (part): part is Extract<typeof part, { type: 'text' }> =>
+              part.type === 'text'
+          )
+          .map((part) => part.content)
+          .join('');
+        const cleanedTextContent = stripRenderedWidgetJson(textContent);
+
+        const errorResults = message.parts.filter(
+          (
+            part
+          ): part is Extract<
+            (typeof message.parts)[number],
+            { type: 'tool-result' }
+          > => part.type === 'tool-result' && part.state === 'error'
+        );
+
         return (
           <React.Fragment key={message.id}>
             <div
@@ -34,98 +60,74 @@ export const MessagesContainer = ({ messages, status }: Props) => {
                 message.role === 'user' && 'justify-end'
               )}
             >
-              {message.role === 'user' && (
-                <UserMessage content={message.content} />
-              )}
-              {message.role === 'assistant' && (
-                <AiMessage content={message.content} />
-              )}
+              {message.role === 'user' && <UserMessage content={textContent} />}
+              {message.role === 'assistant' && cleanedTextContent ? (
+                <AiMessage content={cleanedTextContent} />
+              ) : null}
             </div>
             <div className="w-full text-sm flex mx-auto max-w-3xl">
-              {message.parts?.map((part) => {
-                if (part.type === 'tool-invocation') {
-                  const toolInvocation = part.toolInvocation;
-                  const { state, toolName, toolCallId } = toolInvocation;
+              <Stack className="w-full" gap="4">
+                {message.parts.map((part) => {
+                  if (part.type !== 'tool-call') {
+                    return null;
+                  }
 
-                  if (state === 'result') {
-                    const { result } = toolInvocation;
-                    if (toolName === 'weatherInfoWithCoordinates') {
-                      const mapArgs = toolInvocation.args as Coordinates;
-                      const coordinates = mapArgs.coordinates;
-                      const renderMap =
-                        coordinates?.latitude !== undefined &&
-                        coordinates?.longitude !== undefined;
+                  if (
+                    part.name === 'weatherInfoWithCity' ||
+                    part.name === 'weatherInfoWithCoordinates'
+                  ) {
+                    if (part.output) {
+                      const parsed = weatherWidgetPayloadSchema.safeParse(
+                        part.output.widget
+                      );
 
-                      if (result.success) {
-                        const data = result.data as WeatherData;
+                      if (parsed.success) {
                         return (
-                          <VStack spacing={'md'} key={toolCallId}>
-                            {renderMap && (
-                              <Suspense fallback="Loading location map...">
-                                <LocationWidget
-                                  latitude={coordinates.latitude}
-                                  longitude={coordinates.longitude}
-                                />
-                              </Suspense>
-                            )}
-                            <WeatherCurrentWidget
-                              weatherData={data.current}
-                              location={data.location}
-                            />
-                            <WeatherDailyWidget
-                              weatherData={data.daily}
-                              location={data.location}
-                            />
-                          </VStack>
-                        );
-                      } else {
-                        return (
-                          <div key={toolCallId}>
-                            <Alert>{result.error}</Alert>
-                          </div>
+                          <WeatherWidgetRenderer
+                            key={part.id}
+                            widget={parsed.data}
+                          />
                         );
                       }
                     }
-                    if (toolName === 'weatherInfoWithCity') {
-                      const data = result.data as WeatherData;
+
+                    if (
+                      isStreaming &&
+                      (part.state === 'awaiting-input' ||
+                        part.state === 'input-streaming' ||
+                        part.state === 'input-complete')
+                    ) {
                       return (
-                        <VStack spacing="md" key={toolCallId}>
-                          <WeatherCurrentWidget
-                            weatherData={data.current}
-                            location={data.location}
-                          />
-                          <WeatherDailyWidget
-                            weatherData={data.daily}
-                            location={data.location}
-                          />
-                        </VStack>
-                      );
-                    }
-                  } else {
-                    if (toolName === 'currentLocation') {
-                      return (
-                        <div key={toolCallId} className="text-gray-500">
-                          <AiMessage content="Getting location..." />
-                        </div>
-                      );
-                    }
-                    if (toolName === 'weatherInfoWithCoordinates') {
-                      return (
-                        <div key={toolCallId} className="text-gray-500">
-                          <AiMessage content="Getting weather based on yoru location..." />
-                        </div>
-                      );
-                    }
-                    if (toolName === 'weatherInfoWithCity') {
-                      return (
-                        <div key={toolCallId} className="text-gray-500">
-                          <AiMessage content="Getting weather..." />
-                        </div>
+                        <AiMessage content="Getting weather..." key={part.id} />
                       );
                     }
                   }
-                }
-              })}
+
+                  if (part.name === 'userLocation') {
+                    if (
+                      isStreaming &&
+                      (part.state === 'awaiting-input' ||
+                        part.state === 'input-streaming')
+                    ) {
+                      return (
+                        <AiMessage
+                          content="Getting location..."
+                          key={part.id}
+                        />
+                      );
+                    }
+                  }
+
+                  return null;
+                })}
+                {errorResults.map((part) => (
+                  <Alert key={part.toolCallId} variant="destructive">
+                    <AlertDescription>
+                      {part.error ?? part.content}
+                    </AlertDescription>
+                  </Alert>
+                ))}
+              </Stack>
             </div>
           </React.Fragment>
         );

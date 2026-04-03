@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Heading, Text, VStack } from '~/components/ui';
+import { Card, CardContent, Stack } from '@yaip/yads-ui';
 import { createFileRoute } from '@tanstack/react-router';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -18,24 +18,27 @@ const todoMd = `
 
 export default function About() {
   return (
-    <Container>
-      <VStack spacing="md" width="full">
-        <Heading variant="h1">About</Heading>
-        <Text as="p">
-          About The goal of this project is to investigate how to build ui
-          components that renders message from LLMs using "tools". So continuous
-          updates will be deployed. If the location is not provided in the chat
-          it uses different APIs to get the location to generate a weather
-          forecast and a map.
-        </Text>
-        <Heading variant="h2">Stack</Heading>
-        <Text as="p">
-          Vercel AI sdk, Tanstack Start, Shadcn UI, Tailwind CSS, Storybook,
-          Lucide icons.
-        </Text>
-        <Heading variant="h2">To-do</Heading>
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{todoMd}</ReactMarkdown>
-      </VStack>
-    </Container>
+    <div className="mx-auto w-full max-w-3xl py-8">
+      <Card className="bg-card/68 shadow-sm ring-border/45 backdrop-blur-xl">
+        <CardContent className="pt-1">
+          <Stack gap="4">
+            <h1 className="font-heading text-3xl text-foreground">About</h1>
+            <p className="text-sm leading-relaxed text-foreground/88">
+              The goal of this project is to investigate how to build UI
+              components that render messages from LLM tools. If the location is
+              not provided in the chat, the app uses different APIs to get the
+              location and generate a weather forecast and a map.
+            </p>
+            <h2 className="font-heading text-2xl text-foreground">Stack</h2>
+            <p className="text-sm leading-relaxed text-foreground/88">
+              TanStack AI, TanStack Start, Yads UI, TanStack Query, Tailwind
+              CSS, Storybook, and Lucide icons.
+            </p>
+            <h2 className="font-heading text-2xl text-foreground">To-do</h2>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{todoMd}</ReactMarkdown>
+          </Stack>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

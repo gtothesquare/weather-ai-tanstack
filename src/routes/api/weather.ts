@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { generateWeatherResponse } from '~/features/weather';
+import { generateWeatherResponse } from '~/features/weather/chat';
 
 export const Route = createFileRoute('/api/weather')({
   server: {

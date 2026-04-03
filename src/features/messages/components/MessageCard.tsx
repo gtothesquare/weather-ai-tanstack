@@ -10,9 +10,9 @@ export function MessageCard({ variant, children }: Props) {
   return (
     <div
       className={twJoin(
-        'border rounded-3xl px-4 py-3',
-        variant === 'user' && 'border-green-300 bg-green-50',
-        variant === 'ai' && 'border-gray-300 bg-white'
+        'rounded-3xl px-5 py-4 ring-1 shadow-[0_8px_30px_rgba(0,0,0,0.12)]',
+        variant === 'user' && 'bg-primary/14 ring-border/45 backdrop-blur-md',
+        variant === 'ai' && 'bg-card/70 ring-border/45 backdrop-blur-xl'
       )}
     >
       {children}

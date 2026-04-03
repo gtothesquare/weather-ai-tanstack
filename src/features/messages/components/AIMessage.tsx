@@ -1,7 +1,7 @@
-import { HStack } from '~/components/ui/HStack';
 import { Sparkles } from 'lucide-react';
 import { MessageCard } from '~/features/messages/components/MessageCard';
 import { MarkdownBlock } from '~/components/MarkdownBlock';
+import { Group } from '@yaip/yads-ui';
 
 interface AiMessageProps {
   content: string;
@@ -10,14 +10,14 @@ interface AiMessageProps {
 export const AiMessage = ({ content }: AiMessageProps) => {
   return (
     <MessageCard variant="ai">
-      <HStack align="start" spacing={'md'}>
-        <div className="border border-gray-500 rounded-full p-2 text-gray-800">
+      <Group className="items-start gap-4">
+        <div className="rounded-full border border-white/14 bg-white/6 p-2 text-white/78">
           <Sparkles size={16} />
         </div>
-        <div className="leading-tight pt-1">
+        <div className="flex-1 px-1 pt-1">
           <MarkdownBlock>{content}</MarkdownBlock>
         </div>
-      </HStack>
+      </Group>
     </MessageCard>
   );
 };
