@@ -3,6 +3,7 @@ import { UIMessage } from '@tanstack/ai-react';
 import { twMerge } from 'tailwind-merge';
 import { UserMessage } from './components/UserMessage';
 import { AiMessage } from './components/AIMessage';
+import { ThinkingMessage } from './components/ThinkingMessage';
 import { Alert, AlertDescription, Stack } from '@yaip/yads-ui';
 import { AiLoadingIndicator } from './components/AiLoadingIndicator';
 import { WeatherWidgetRenderer } from './widgets/weatherWidget';
@@ -62,12 +63,30 @@ export const MessagesContainer = ({ messages, status }: Props) => {
             >
               {message.role === 'user' && <UserMessage content={textContent} />}
               {message.role === 'assistant' && cleanedTextContent ? (
-                <AiMessage content={cleanedTextContent} />
+                <AiMessage
+                  content={cleanedTextContent}
+                  isAnimating={isStreaming}
+                />
               ) : null}
             </div>
             <div className="w-full text-sm flex mx-auto max-w-3xl">
               <Stack className="w-full" gap="4">
-                {message.parts.map((part) => {
+                {message.parts.map((part, index) => {
+                  if (part.type === 'thinking') {
+                    const content = part.content.trim();
+
+                    if (!content) {
+                      return null;
+                    }
+
+                    return (
+                      <ThinkingMessage
+                        content={content}
+                        key={`${message.id}-thinking-${index}`}
+                      />
+                    );
+                  }
+
                   if (part.type !== 'tool-call') {
                     return null;
                   }
@@ -106,8 +125,10 @@ export const MessagesContainer = ({ messages, status }: Props) => {
                   if (part.name === 'userLocation') {
                     if (
                       isStreaming &&
+                      !part.output &&
                       (part.state === 'awaiting-input' ||
-                        part.state === 'input-streaming')
+                        part.state === 'input-streaming' ||
+                        part.state === 'input-complete')
                     ) {
                       return (
                         <AiMessage

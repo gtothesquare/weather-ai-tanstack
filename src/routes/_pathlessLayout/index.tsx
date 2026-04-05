@@ -86,7 +86,7 @@ function Home() {
                 <Textarea
                   placeholder="Get the weather"
                   name="prompt"
-                  className="min-h-14 flex-1 resize-none border-0 bg-transparent px-1 py-2 text-base leading-6 text-foreground shadow-none focus-visible:ring-0"
+                  className="min-h-14 flex-1 resize-none border-0 bg-transparent px-3 py-2.5 text-base leading-6 text-foreground shadow-none focus-visible:ring-0"
                   value={input}
                   onChange={(event) => setInput(event.target.value)}
                   onKeyDown={handleKeyDown}

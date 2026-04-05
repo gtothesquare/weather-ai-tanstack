@@ -37,5 +37,12 @@ export default defineConfig([
   },
   eslintConfigPrettier,
   eslintPluginPrettierRecommended,
-  globalIgnores(['**/.config/', 'tsconfig.json']),
+  globalIgnores([
+    '**/.config/',
+    '.output/**',
+    '.tanstack/**',
+    'build/**',
+    'dist/**',
+    'tsconfig.json',
+  ]),
 ]);

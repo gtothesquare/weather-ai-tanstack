@@ -1,8 +1,6 @@
-import React from 'react';
 import { Card, CardContent, Stack } from '@yaip/yads-ui';
 import { createFileRoute } from '@tanstack/react-router';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
+import { MarkdownBlock } from '~/components/MarkdownBlock';
 
 export const Route = createFileRoute('/about/')({
   component: About,
@@ -12,8 +10,8 @@ const todoMd = `
  - [x] Fix the unknown conditions message
  - [x] Render a widget for the daily forecast
  - [ ] Suggest a song based on the forecast
- - [ ] Add a temperature range to the forecast widget
- - [ ] Improve when to render the widgets, right now they are always rendered if I want just the forecast for tomorrow.
+ - [x] Add a temperature range to the forecast widget
+ - [x] Improve when to render the widgets, right now they are always rendered if I want just the forecast for tomorrow.
 `;
 
 export default function About() {
@@ -35,7 +33,7 @@ export default function About() {
               CSS, Storybook, and Lucide icons.
             </p>
             <h2 className="font-heading text-2xl text-foreground">To-do</h2>
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{todoMd}</ReactMarkdown>
+            <MarkdownBlock>{todoMd}</MarkdownBlock>
           </Stack>
         </CardContent>
       </Card>

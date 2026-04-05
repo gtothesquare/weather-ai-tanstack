@@ -5,9 +5,10 @@ import { Group } from '@yaip/yads-ui';
 
 interface AiMessageProps {
   content: string;
+  isAnimating?: boolean;
 }
 
-export const AiMessage = ({ content }: AiMessageProps) => {
+export const AiMessage = ({ content, isAnimating = false }: AiMessageProps) => {
   return (
     <MessageCard variant="ai">
       <Group className="items-start gap-4">
@@ -15,7 +16,7 @@ export const AiMessage = ({ content }: AiMessageProps) => {
           <Sparkles size={16} />
         </div>
         <div className="flex-1 px-1 pt-1">
-          <MarkdownBlock>{content}</MarkdownBlock>
+          <MarkdownBlock isAnimating={isAnimating}>{content}</MarkdownBlock>
         </div>
       </Group>
     </MessageCard>

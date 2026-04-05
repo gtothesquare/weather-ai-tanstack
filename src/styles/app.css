@@ -1,9 +1,11 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import 'leaflet/dist/leaflet.css';
+@import 'streamdown/styles.css';
 @import '@yaip/yads-ui/theme.css';
 
 @source '../node_modules/@yaip/yads-ui/dist';
+@source '../node_modules/streamdown/dist/*.js';
 
 @custom-variant dark (&:is(.dark *));
 
