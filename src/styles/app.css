@@ -2,13 +2,12 @@
 @import 'tw-animate-css';
 @import 'leaflet/dist/leaflet.css';
 @import 'streamdown/styles.css';
-@import '@yaip/yads-ui/theme.css';
 
-@source '../node_modules/@yaip/yads-ui/dist';
-@source '../node_modules/streamdown/dist/*.js';
+@import '@yaip/yads-ui/styles.css';
 
 @custom-variant dark (&:is(.dark *));
 
+/** app speific overides */
 :root {
   --background: oklch(0.22 0.02 255);
   --foreground: oklch(0.97 0.01 250);
