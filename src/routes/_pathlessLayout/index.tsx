@@ -80,13 +80,13 @@ function Home() {
           className="mx-auto max-w-3xl w-full px-4"
           onSubmit={(event) => void handleSubmit(event)}
         >
-          <Card className="bg-card/76 shadow-sm ring-border/45 backdrop-blur-xl">
+          <Card className="bg-card/76 shadow-sm ring-border/35 transition-[box-shadow,ring-color] duration-150 focus-within:ring-primary/30 focus-within:shadow-[0_0_0_1px_rgba(125,166,255,0.08)] backdrop-blur-xl">
             <CardContent className="pt-1">
               <div className="flex items-end gap-3">
                 <Textarea
                   placeholder="Get the weather"
                   name="prompt"
-                  className="min-h-14 flex-1 resize-none border-0 bg-transparent px-3 py-2.5 text-base leading-6 text-foreground shadow-none focus-visible:ring-0"
+                  className="min-h-14 flex-1 resize-none border-0 bg-transparent px-3 py-2.5 text-base leading-6 text-foreground shadow-none outline-none ring-0 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
                   value={input}
                   onChange={(event) => setInput(event.target.value)}
                   onKeyDown={handleKeyDown}

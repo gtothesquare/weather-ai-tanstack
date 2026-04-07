@@ -9,7 +9,7 @@ export const Route = createFileRoute('/about/')({
 const todoMd = `
  - [x] Fix the unknown conditions message
  - [x] Render a widget for the daily forecast
- - [ ] Suggest a song based on the forecast
+ - [x] Suggest a song based on the forecast
  - [x] Add a temperature range to the forecast widget
  - [x] Improve when to render the widgets, right now they are always rendered if I want just the forecast for tomorrow.
 `;

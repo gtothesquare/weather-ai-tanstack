@@ -16,6 +16,33 @@ const toIntArray = (val: number) => {
   return Math.ceil(val);
 };
 
+function hasCoordinates(lat?: number, lon?: number) {
+  return Number.isFinite(lat) && Number.isFinite(lon);
+}
+
+interface WeatherVariable {
+  value(): number;
+  valuesArray(): ArrayLike<number> | null;
+}
+
+interface WeatherVariableContainer {
+  variables(index: number): WeatherVariable | null;
+}
+
+function requireVariable<
+  T extends { variables: (index: number) => WeatherVariable | null },
+>(container: T, index: number, label: string) {
+  const variable = container.variables(index);
+
+  if (!variable) {
+    throw new Error(
+      `The weather service returned an incomplete forecast for ${label}.`
+    );
+  }
+
+  return variable;
+}
+
 export const fetchWeather = async (
   params: FetchWeatherParams
 ): Promise<WeatherData> => {
@@ -34,19 +61,27 @@ export const fetchWeather = async (
   } else {
     lat = params.coordinates?.latitude;
     lon = params.coordinates?.longitude;
-    if (lat && lon) {
+    if (
+      lat !== undefined &&
+      lon !== undefined &&
+      Number.isFinite(lat) &&
+      Number.isFinite(lon)
+    ) {
       const result = await fetchReverseGeoCodeLocation(lat, lon);
       city = result?.name;
     }
   }
 
-  if (!lat || !lon) {
-    throw new Error(`Location '${JSON.stringify(params)}' not found`);
+  if (!hasCoordinates(lat, lon)) {
+    throw new Error('I could not determine a valid forecast location.');
   }
 
+  const latitude = lat;
+  const longitude = lon;
+
   const weatherParams = {
-    latitude: lat,
-    longitude: lon,
+    latitude,
+    longitude,
     daily: WEATHER_DAILY_KEYS,
     current: WEATHER_CURRENT_KEYS,
     timezone: 'auto',
@@ -56,10 +91,19 @@ export const fetchWeather = async (
 
   const weatherApiResponse = await fetchWeatherApi(weatherUrl, weatherParams);
   const response = weatherApiResponse[0];
+
+  if (!response) {
+    throw new Error('The weather service returned no forecast data.');
+  }
+
   // Attributes for timezone and location
   const utcOffsetSeconds = response.utcOffsetSeconds();
-  const current = response.current()!;
-  const daily = response.daily()!;
+  const current = response.current();
+  const daily = response.daily();
+
+  if (!current || !daily) {
+    throw new Error('The weather service returned an incomplete forecast.');
+  }
 
   // Attributes for timezone and location
   /*const utcOffsetSeconds = response.utcOffsetSeconds();
@@ -69,11 +113,17 @@ export const fetchWeather = async (
   const longitude = response.longitude();*/
 
   // Note: The order of weather variables in the URL query and the indices below need to match!
-  const currentWeatherCode = current
-    .variables(WEATHER_CURRENT_PARAMS.weather_code.index)!
-    .value();
+  const currentWeatherCode = requireVariable(
+    current as WeatherVariableContainer,
+    WEATHER_CURRENT_PARAMS.weather_code.index,
+    'current conditions'
+  ).value();
   const dailyWeatherCodes = Array.from(
-    daily.variables(WEATHER_DAILY_PARAMS.weather_code.index)!.valuesArray()!
+    requireVariable(
+      daily as WeatherVariableContainer,
+      WEATHER_DAILY_PARAMS.weather_code.index,
+      'daily conditions'
+    ).valuesArray()!
   );
 
   return {
@@ -81,24 +131,40 @@ export const fetchWeather = async (
     current: {
       time: new Date((Number(current.time()) + utcOffsetSeconds) * 1000),
       temperature: toIntArray(
-        current.variables(WEATHER_CURRENT_PARAMS.temperature_2m.index)!.value()
+        requireVariable(
+          current as WeatherVariableContainer,
+          WEATHER_CURRENT_PARAMS.temperature_2m.index,
+          'temperature'
+        ).value()
       ),
       weatherCode: currentWeatherCode,
       feelsLike: toIntArray(
-        current
-          .variables(WEATHER_CURRENT_PARAMS.apparent_temperature.index)!
-          .value()
+        requireVariable(
+          current as WeatherVariableContainer,
+          WEATHER_CURRENT_PARAMS.apparent_temperature.index,
+          'apparent temperature'
+        ).value()
       ),
       humidity: toIntArray(
-        current
-          .variables(WEATHER_CURRENT_PARAMS.relative_humidity_2m.index)!
-          .value()
+        requireVariable(
+          current as WeatherVariableContainer,
+          WEATHER_CURRENT_PARAMS.relative_humidity_2m.index,
+          'humidity'
+        ).value()
       ),
       windSpeed: toIntArray(
-        current.variables(WEATHER_CURRENT_PARAMS.wind_speed_10m.index)!.value()
+        requireVariable(
+          current as WeatherVariableContainer,
+          WEATHER_CURRENT_PARAMS.wind_speed_10m.index,
+          'wind speed'
+        ).value()
       ),
       windGust: toIntArray(
-        current.variables(WEATHER_CURRENT_PARAMS.wind_gusts_10m.index)!.value()
+        requireVariable(
+          current as WeatherVariableContainer,
+          WEATHER_CURRENT_PARAMS.wind_gusts_10m.index,
+          'wind gusts'
+        ).value()
       ),
       conditions: getWeatherCondition(currentWeatherCode),
     },
@@ -115,14 +181,18 @@ export const fetchWeather = async (
       ),
       weatherCodeValues: dailyWeatherCodes,
       temperatureMaxValues: Array.from(
-        daily
-          .variables(WEATHER_DAILY_PARAMS.temperature_2m_max.index)!
-          .valuesArray()!
+        requireVariable(
+          daily as WeatherVariableContainer,
+          WEATHER_DAILY_PARAMS.temperature_2m_max.index,
+          'daily high temperatures'
+        ).valuesArray()!
       ).map(toIntArray),
       temperatureMinValues: Array.from(
-        daily
-          .variables(WEATHER_DAILY_PARAMS.temperature_2m_min.index)!
-          .valuesArray()!
+        requireVariable(
+          daily as WeatherVariableContainer,
+          WEATHER_DAILY_PARAMS.temperature_2m_min.index,
+          'daily low temperatures'
+        ).valuesArray()!
       ).map(toIntArray),
       conditionValues: dailyWeatherCodes.map((code) => {
         return getWeatherCondition(code);
