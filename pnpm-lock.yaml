@@ -42,8 +42,8 @@ importers:
         specifier: ^1.143.11
         version: 1.143.11(crossws@0.4.1(srvx@0.9.8))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vite@7.3.0(@types/node@22.19.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.39.2)(tsx@4.21.0)(yaml@2.8.2))
       '@yaip/yads-ui':
-        specifier: 0.1.7
-        version: 0.1.7(@phosphor-icons/react@2.1.10(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(tailwindcss@4.1.18)
+        specifier: 0.1.8
+        version: 0.1.8(@phosphor-icons/react@2.1.10(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(tailwindcss@4.1.18)
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -1673,8 +1673,8 @@ packages:
     peerDependencies:
       vite: ^4.2.0 || ^5.0.0 || ^6.0.0 || ^7.0.0
 
-  '@yaip/yads-ui@0.1.7':
-    resolution: {integrity: sha512-Mpzh1JPFI6GFu6ur1xxyhPlL7uSroOAhFWcGpWU/tqqeSwyhyNCjgcBMkB/d2cXfF7CFztn28ZsUogdsclykTw==}
+  '@yaip/yads-ui@0.1.8':
+    resolution: {integrity: sha512-kdJbeAkZUhTxbxdGfGe2RtpY3LH7wnh0SjM4sH+3DnJdqqomyl0bkj6pK56Oqy8SoSI7cn7Fwp33fWe1W5pOnA==}
     peerDependencies:
       '@phosphor-icons/react': ^2.0.0
       react: ^19.0.0
@@ -6000,7 +6000,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@yaip/yads-ui@0.1.7(@phosphor-icons/react@2.1.10(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(tailwindcss@4.1.18)':
+  '@yaip/yads-ui@0.1.8(@phosphor-icons/react@2.1.10(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(tailwindcss@4.1.18)':
     dependencies:
       '@base-ui/react': 1.3.0(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@fontsource-variable/dm-sans': 5.2.8
