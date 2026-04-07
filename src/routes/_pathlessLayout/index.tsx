@@ -57,7 +57,7 @@ function Home() {
   const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
-      void handleSubmit();
+      handleSubmit();
     }
   };
 
@@ -78,7 +78,7 @@ function Home() {
 
         <form
           className="mx-auto max-w-3xl w-full px-4"
-          onSubmit={(event) => void handleSubmit(event)}
+          onSubmit={(event) => handleSubmit(event)}
         >
           <Card className="bg-card/76 shadow-sm ring-border/35 transition-[box-shadow,ring-color] duration-150 focus-within:ring-primary/30 focus-within:shadow-[0_0_0_1px_rgba(125,166,255,0.08)] backdrop-blur-xl">
             <CardContent className="pt-1">

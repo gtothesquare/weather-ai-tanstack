@@ -1,8 +1,9 @@
 import { toolDefinition } from '@tanstack/ai';
 import { z } from 'zod';
-import { fetchWeather } from './api/fetchWeather';
+import { fetchWeather, WeatherProviderError } from './api/fetchWeather';
 import { fetchMusicSuggestion } from './api/fetchMusicSuggestion';
 import { weatherWidgetPayloadSchema } from './widgetSchema';
+import type { WeatherData } from './types';
 
 const locationSchema = z.object({
   location: z.string().describe('City name'),
@@ -32,13 +33,25 @@ function toWeatherToolErrorMessage(
     | { kind: 'city'; location: string }
     | { kind: 'coordinates'; latitude: number; longitude: number }
 ) {
-  const fallback =
+  const locationFallback =
     input.kind === 'coordinates'
       ? 'I could not retrieve the weather for your current location. Please try a nearby city name instead.'
       : `I could not retrieve the weather for ${input.location}. Please try a nearby city or a more specific place name.`;
 
+  if (error instanceof WeatherProviderError) {
+    if (error.code === 'provider-rate-limit') {
+      return 'The weather provider is rate limiting requests right now. Please try again in a moment.';
+    }
+
+    if (error.code === 'location-not-found') {
+      return locationFallback;
+    }
+
+    return 'The weather provider is temporarily unavailable. Please try again in a moment.';
+  }
+
   if (!(error instanceof Error) || !error.message) {
-    return fallback;
+    return locationFallback;
   }
 
   if (
@@ -46,10 +59,36 @@ function toWeatherToolErrorMessage(
     error.message.includes('no forecast data') ||
     error.message.includes('valid forecast location')
   ) {
-    return fallback;
+    return locationFallback;
   }
 
   return error.message;
+}
+
+function logWeatherToolError(
+  toolName: string,
+  input:
+    | { kind: 'city'; location: string }
+    | { kind: 'coordinates'; latitude: number; longitude: number },
+  error: unknown,
+  userMessage: string
+) {
+  console.error(`[${toolName}] failed`, {
+    input,
+    userMessage,
+    errorMessage: error instanceof Error ? error.message : String(error),
+    stack: error instanceof Error ? error.stack : undefined,
+  });
+}
+
+function serializeWeatherData(data: WeatherData) {
+  return {
+    ...data,
+    current: {
+      ...data.current,
+      time: data.current.time.toISOString(),
+    },
+  };
 }
 
 const buildSummary = async (
@@ -87,6 +126,7 @@ const buildSummary = async (
               longitude: input.longitude,
             },
       showMap: input.kind === 'coordinates',
+      forecast: serializeWeatherData(data),
       musicSuggestion,
     },
   });
@@ -118,9 +158,10 @@ export const weatherInfoWithCityServerTool = weatherInfoWithCityTool.server(
     try {
       return await buildSummary({ kind: 'city', location });
     } catch (error) {
-      throw new Error(
-        toWeatherToolErrorMessage(error, { kind: 'city', location })
-      );
+      const input = { kind: 'city' as const, location };
+      const userMessage = toWeatherToolErrorMessage(error, input);
+      logWeatherToolError('weatherInfoWithCity', input, error, userMessage);
+      throw new Error(userMessage);
     }
   }
 );
@@ -128,20 +169,22 @@ export const weatherInfoWithCityServerTool = weatherInfoWithCityTool.server(
 export const weatherInfoWithCoordinatesServerTool =
   weatherInfoWithCoordinatesTool.server(async (args) => {
     const { coordinates } = coordinatesSchema.parse(args);
+    const input = {
+      kind: 'coordinates' as const,
+      latitude: coordinates.latitude,
+      longitude: coordinates.longitude,
+    };
 
     try {
-      return await buildSummary({
-        kind: 'coordinates',
-        latitude: coordinates.latitude,
-        longitude: coordinates.longitude,
-      });
+      return await buildSummary(input);
     } catch (error) {
-      throw new Error(
-        toWeatherToolErrorMessage(error, {
-          kind: 'coordinates',
-          latitude: coordinates.latitude,
-          longitude: coordinates.longitude,
-        })
+      const userMessage = toWeatherToolErrorMessage(error, input);
+      logWeatherToolError(
+        'weatherInfoWithCoordinates',
+        input,
+        error,
+        userMessage
       );
+      throw new Error(userMessage);
     }
   });

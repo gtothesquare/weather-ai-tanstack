@@ -1,6 +1,5 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
 import type { ComponentRenderProps } from '@json-render/react';
 import { createRenderer } from '@json-render/react';
 import { defineCatalog } from '@json-render/core';
@@ -12,25 +11,22 @@ import {
   AlertDescription,
   Card,
   CardContent,
-  Skeleton,
   Stack,
 } from '@yaip/yads-ui';
-import {
-  type WeatherQueryInput,
-  weatherQueryOptions,
-} from '~/features/weather/queries';
 import { WeatherCurrentWidget } from '~/features/weather/components/WeatherCurrentWidget';
 import { WeatherDailyWidget } from '~/features/weather/components/WeatherDailyWidget';
 import { LocationWidget } from '~/features/location/LocationWidget';
 import {
-  currentWeatherSchema,
   dailyWeatherSchema,
+  currentWeatherSchema,
 } from '~/features/weather/schemas';
 import {
   musicSuggestionSchema,
+  type SerializedWeatherData,
   type WeatherWidgetPayload,
   weatherWidgetPayloadSchema,
 } from '~/features/weather/widgetSchema';
+import type { WeatherData } from '~/features/weather/types';
 
 const weatherCurrentCardPropsSchema = z.object({
   location: z.string(),
@@ -179,34 +175,29 @@ function MusicSuggestionCard({
   );
 }
 
+function deserializeWeatherData(forecast: SerializedWeatherData): WeatherData {
+  return {
+    ...forecast,
+    current: {
+      ...forecast.current,
+      time: new Date(forecast.current.time),
+    },
+  };
+}
+
 function WeatherWidgetQuery({
   element,
 }: ComponentRenderProps<WeatherWidgetPayload>) {
   const props = element.props;
-  const query = useQuery(weatherQueryOptions(props.query as WeatherQueryInput));
-
-  if (query.isPending) {
-    return (
-      <Card className="bg-card/68 shadow-sm ring-border/45 backdrop-blur-xl">
-        <CardContent className="pt-1">
-          <Stack gap="3">
-            <Skeleton className="h-28 w-full" />
-            <Skeleton className="h-56 w-full" />
-          </Stack>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  if (query.isError) {
+  if (!props.forecast) {
     return (
       <Alert variant="destructive">
-        <AlertDescription>{query.error.message}</AlertDescription>
+        <AlertDescription>Forecast data is unavailable.</AlertDescription>
       </Alert>
     );
   }
 
-  const { data } = query;
+  const data = deserializeWeatherData(props.forecast);
 
   const elements: Record<
     string,

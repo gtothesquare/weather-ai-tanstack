@@ -14,6 +14,14 @@ interface Props {
   status: 'submitted' | 'streaming' | 'ready' | 'error';
 }
 
+/**
+ * that extracts an error message from tool payloads when they
+ *   arrive as either:
+ *
+ *   - an object like { error: "..." }
+ *   - a JSON string like "{"error":"..."}"
+ * @param content
+ */
 function parseStructuredToolError(content: unknown) {
   if (
     content &&
@@ -143,22 +151,14 @@ export const MessagesContainer = ({ messages, status }: Props) => {
                 isStreaming &&
                 !part.output &&
                 (part.state === 'awaiting-input' ||
-                  part.state === 'input-streaming')
-              ) {
-                return <AiMessage content="Getting weather..." key={part.id} />;
-              }
-            }
-
-            if (part.name === 'userLocation') {
-              if (
-                isStreaming &&
-                !part.output &&
-                (part.state === 'awaiting-input' ||
                   part.state === 'input-streaming' ||
                   part.state === 'input-complete')
               ) {
                 return (
-                  <AiMessage content="Getting location..." key={part.id} />
+                  <AiMessage
+                    content="Working to get the latest weather data..."
+                    key={part.id}
+                  />
                 );
               }
             }

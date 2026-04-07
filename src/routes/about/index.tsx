@@ -12,6 +12,7 @@ const todoMd = `
  - [x] Suggest a song based on the forecast
  - [x] Add a temperature range to the forecast widget
  - [x] Improve when to render the widgets, right now they are always rendered if I want just the forecast for tomorrow.
+ - [x] Add better tool error handling and provider rate-limit fallbacks
 `;
 
 export default function About() {

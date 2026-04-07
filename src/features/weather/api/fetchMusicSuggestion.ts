@@ -22,6 +22,10 @@ interface WeatherMusicSeed {
   reason: string;
 }
 
+function randomIntBetween(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 function buildWeatherMusicSeed(weather: WeatherData): WeatherMusicSeed {
   const code = weather.current.weatherCode;
   const temperature = weather.current.temperature;
@@ -125,7 +129,7 @@ export async function fetchMusicSuggestion(
   const params = new URLSearchParams({
     q: seed.query,
     type: 'track',
-    limit: '5',
+    limit: '20',
   });
 
   const response = await fetch(
@@ -142,11 +146,11 @@ export async function fetchMusicSuggestion(
   }
 
   const data = (await response.json()) as SpotifyTrackSearchResponse;
-  const track = data.tracks?.items[0];
+  const items = data.tracks?.items;
 
-  if (!track) {
-    return undefined;
-  }
+  if (!items?.length) return undefined;
+
+  const track = items[randomIntBetween(0, items.length - 1)];
 
   return {
     source: 'spotify',
