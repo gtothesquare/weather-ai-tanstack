@@ -47,10 +47,10 @@ const ApiWeatherRoute = ApiWeatherRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof PathlessLayoutIndexRoute
   '/about': typeof AboutRouteRouteWithChildren
   '/health': typeof HealthRoute
   '/api/weather': typeof ApiWeatherRoute
-  '/': typeof PathlessLayoutIndexRoute
   '/about/': typeof AboutIndexRoute
 }
 export interface FileRoutesByTo {
@@ -70,7 +70,7 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/about' | '/health' | '/api/weather' | '/' | '/about/'
+  fullPaths: '/' | '/about' | '/health' | '/api/weather' | '/about/'
   fileRoutesByTo: FileRoutesByTo
   to: '/health' | '/api/weather' | '/' | '/about'
   id:
@@ -109,7 +109,7 @@ declare module '@tanstack/react-router' {
     '/_pathlessLayout': {
       id: '/_pathlessLayout'
       path: ''
-      fullPath: ''
+      fullPath: '/'
       preLoaderRoute: typeof PathlessLayoutRouteRouteImport
       parentRoute: typeof rootRouteImport
     }

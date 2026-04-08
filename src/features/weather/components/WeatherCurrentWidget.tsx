@@ -43,7 +43,7 @@ export const WeatherCurrentWidget = ({
             <div className="w-16">
               <WeatherIcon
                 weatherCode={weatherCode}
-                lucideProps={{ color: '#f6b844', size: 'xl' }}
+                iconProps={{ color: '#f6b844', size: 44, weight: 'duotone' }}
               />
             </div>
           </Stack>

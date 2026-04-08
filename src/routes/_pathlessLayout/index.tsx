@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { fetchServerSentEvents } from '@tanstack/ai-client';
 import { type UIMessage, useChat } from '@tanstack/ai-react';
-import { ArrowUp } from 'lucide-react';
+import { ArrowUp } from '@phosphor-icons/react';
 import {
   Alert,
   AlertDescription,

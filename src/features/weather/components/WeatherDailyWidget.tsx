@@ -27,7 +27,7 @@ function DayWeatherLine({
       <div className="flex justify-center text-amber-200/85">
         <WeatherIcon
           weatherCode={weatherCode}
-          lucideProps={{ color: '#f7c66b', size: 32 }}
+          iconProps={{ color: '#f7c66b', size: 32, weight: 'duotone' }}
         />
       </div>
       <div className="grid grid-cols-[40px_minmax(0,1fr)_40px] items-center gap-3">

@@ -5,7 +5,7 @@ import { createRenderer } from '@json-render/react';
 import { defineCatalog } from '@json-render/core';
 import { schema } from '@json-render/react/schema';
 import { z } from 'zod';
-import { Music4 } from 'lucide-react';
+import { MusicNotesSimple } from '@phosphor-icons/react';
 import {
   Alert,
   AlertDescription,
@@ -144,7 +144,7 @@ function MusicSuggestionCard({
             />
           ) : (
             <div className="flex size-20 items-center justify-center rounded-xl bg-emerald-500/16 text-emerald-700">
-              <Music4 size={28} />
+              <MusicNotesSimple size={28} />
             </div>
           )}
           <div className="min-w-0 flex-1">

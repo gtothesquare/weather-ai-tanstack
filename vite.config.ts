@@ -1,4 +1,3 @@
-import tsConfigPaths from 'vite-tsconfig-paths';
 import { defineConfig } from 'vite';
 import { tanstackStart } from '@tanstack/react-start/plugin/vite';
 import tailwindcss from '@tailwindcss/vite';
@@ -9,16 +8,11 @@ export default defineConfig({
   server: {
     port: 3000,
   },
+  resolve: {
+    tsconfigPaths: true,
+  },
   build: {
     sourcemap: true,
   },
-  plugins: [
-    tsConfigPaths({
-      projects: ['./tsconfig.json'],
-    }),
-    tailwindcss(),
-    tanstackStart(),
-    nitro(),
-    viteReact(),
-  ],
+  plugins: [tailwindcss(), tanstackStart(), nitro(), viteReact()],
 });
