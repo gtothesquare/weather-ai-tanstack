@@ -1,13 +1,14 @@
-import { Link } from '~/components/ui/Link';
-
 export const Footer = () => {
   return (
-    <footer className="flex justify-center mt-5 py-5 w-full bg-slate-50">
+    <footer className="mt-5 flex w-full justify-center border-t border-border/50 bg-card/45 py-5 backdrop-blur-xl">
       <div className="flex flex-col space-y-2">
-        <div className="text-xs">
-          <Link href="https://gerieshandal.com" cssClass="text-ghost-white">
+        <div className="text-xs text-muted-foreground">
+          <a
+            className="text-muted-foreground transition-colors hover:text-foreground"
+            href="https://gerieshandal.com"
+          >
             by @gtothesquare
-          </Link>
+          </a>
         </div>
       </div>
     </footer>

@@ -63,3 +63,27 @@ export interface ReverseGeocodingLocation {
   };
   boundingbox: [string, string, string, string];
 }
+
+export interface SearchGeocodingLocation {
+  place_id: string;
+  licence: string;
+  osm_type: string;
+  osm_id: string;
+  lat: string;
+  lon: string;
+  category: string;
+  type: string;
+  importance: number;
+  display_name: string;
+  name?: string;
+  address?: {
+    city?: string;
+    town?: string;
+    village?: string;
+    municipality?: string;
+    county?: string;
+    state?: string;
+    country?: string;
+    country_code?: string;
+  };
+}

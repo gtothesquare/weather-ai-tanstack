@@ -15,7 +15,7 @@ export const PageLayout = ({ children, withPattern }: Props) => {
       <main
         className={twJoin(
           'flex flex-col grow inset-shadow-xs',
-          withPattern && 'bg-pattern',
+          withPattern && 'bg-atmosphere',
           'px-4',
           'lg:px-0'
         )}

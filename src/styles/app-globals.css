@@ -1,0 +1,71 @@
+/** App-specific global styles and utilities. */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    background-image:
+      radial-gradient(
+        circle at 18% 18%,
+        rgba(90, 132, 196, 0.1),
+        transparent 30%
+      ),
+      radial-gradient(
+        circle at 78% 12%,
+        rgba(106, 92, 168, 0.08),
+        transparent 24%
+      ),
+      radial-gradient(
+        circle at 48% 100%,
+        rgba(82, 128, 153, 0.08),
+        transparent 32%
+      ),
+      linear-gradient(180deg, rgba(12, 18, 30, 0.94), rgba(16, 24, 37, 0.96)),
+      repeating-linear-gradient(
+        0deg,
+        rgba(255, 255, 255, 0.018) 0,
+        rgba(255, 255, 255, 0.018) 1px,
+        transparent 1px,
+        transparent 3px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.012) 0,
+        rgba(255, 255, 255, 0.012) 1px,
+        transparent 1px,
+        transparent 4px
+      );
+    background-attachment: fixed;
+  }
+}
+
+.bg-atmosphere {
+  position: relative;
+  overflow: hidden;
+}
+
+.bg-atmosphere::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(255, 255, 255, 0.04),
+      transparent 24%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(77, 189, 255, 0.04),
+      transparent 20%
+    ),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 35%);
+}
+
+.bg-atmosphere > * {
+  position: relative;
+  z-index: 1;
+}

@@ -1,5 +1,4 @@
 import { MessageCard } from './MessageCard';
-import { Text } from '~/components/ui';
 
 interface Props {
   content: string;
@@ -8,7 +7,9 @@ interface Props {
 export const UserMessage = ({ content }: Props) => {
   return (
     <MessageCard variant={'user'}>
-      <Text>{`You: ${content}`}</Text>
+      <div className="px-1">
+        <p className="text-sm leading-relaxed text-foreground">{`You: ${content}`}</p>
+      </div>
     </MessageCard>
   );
 };

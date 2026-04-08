@@ -1,33 +1,53 @@
 import { WeatherIcon } from './WeatherIcon';
-import { VStack } from '~/components/ui/VStack';
-import { HStack } from '~/components/ui/HStack';
-import { Card, CardContent } from '~/components/ui/Card';
-import { WeatherDataCurrent } from '../types';
+import { Card, CardContent, Stack } from '@yaip/yads-ui';
+import { WeatherDataCurrent, WeatherDataDaily } from '../types';
 
 interface Props {
   weatherData: WeatherDataCurrent;
+  dailyWeather?: WeatherDataDaily;
   location?: string;
 }
 
-export const WeatherCurrentWidget = ({ weatherData, location }: Props) => {
-  const { temperature, weatherCode } = weatherData;
+export const WeatherCurrentWidget = ({
+  weatherData,
+  dailyWeather,
+  location,
+}: Props) => {
+  const { temperature, weatherCode, conditions } = weatherData;
+  const highTemperature = dailyWeather?.temperatureMaxValues[0];
+  const lowTemperature = dailyWeather?.temperatureMinValues[0];
+
   return (
-    <Card>
-      <CardContent>
-        <HStack justify="between" spacing="lg">
-          <VStack justify="center">
-            <div className="w-20">
+    <Card className="w-full max-w-sm overflow-hidden bg-linear-to-b from-slate-700/88 to-slate-800/88 text-white shadow-lg ring-border/40 backdrop-blur-xl">
+      <CardContent className="pt-1">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            {location && (
+              <h1 className="text-xl font-semibold tracking-tight text-white">
+                {location}
+              </h1>
+            )}
+            <div className="mt-2">
+              <span className="text-7xl font-light leading-none">{`${temperature}°`}</span>
+            </div>
+            <p className="mt-2 text-2xl font-semibold text-white/90">
+              {conditions}
+            </p>
+            {highTemperature !== undefined && lowTemperature !== undefined ? (
+              <p className="mt-1 text-lg font-semibold text-white/90">
+                {`H:${highTemperature}°  L:${lowTemperature}°`}
+              </p>
+            ) : null}
+          </div>
+          <Stack className="justify-center pt-1">
+            <div className="w-16">
               <WeatherIcon
                 weatherCode={weatherCode}
-                lucideProps={{ color: 'orange', size: 'xl' }}
+                iconProps={{ color: '#f6b844', size: 44, weight: 'duotone' }}
               />
             </div>
-          </VStack>
-          <span className="font-bold text-6xl text-slate-600">{`${temperature}°`}</span>
-        </HStack>
-        {location && (
-          <h1 className="text-slate-600 text-xl font-semibold">{location}</h1>
-        )}
+          </Stack>
+        </div>
       </CardContent>
     </Card>
   );

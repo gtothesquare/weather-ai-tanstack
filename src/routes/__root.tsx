@@ -10,6 +10,7 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import appCss from '~/styles/app.css?url';
 import { DefaultCatchBoundary } from '~/components/DefaultCatchBoundry';
 import { getHeadMeta } from '~/lib/getHeadMeta';
+import { AppProviders } from '~/components/providers/AppProviders';
 
 export const Route = createRootRoute({
   head: () => ({
@@ -70,19 +71,21 @@ export const Route = createRootRoute({
 function RootComponent() {
   return (
     <RootDocument>
-      <Outlet />
+      <AppProviders>
+        <Outlet />
+      </AppProviders>
     </RootDocument>
   );
 }
 
-function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
+function RootDocument({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className="w-full h-full flex flex-col m-0">
       <head>
         <HeadContent />
       </head>
       {/* flex flex-col grow with the html el classes makes the footer be in the bottom without content*/}
-      <body className="flex flex-col grow text-eerie-black">
+      <body className="flex flex-col grow">
         {children}
         <TanStackRouterDevtools position="bottom-right" />
         <Scripts />
