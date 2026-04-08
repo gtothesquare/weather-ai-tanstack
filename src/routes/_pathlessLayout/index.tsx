@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { fetchServerSentEvents } from '@tanstack/ai-client';
 import { type UIMessage, useChat } from '@tanstack/ai-react';
-import { ArrowUp } from '@phosphor-icons/react';
+import { ArrowUpIcon } from '@phosphor-icons/react';
 import {
   Alert,
   AlertDescription,
@@ -11,13 +11,12 @@ import {
   Textarea,
 } from '@yaip/yads-ui';
 import { MessagesContainer } from '~/features/messages/MessagesContainer';
-import { FormEvent, KeyboardEvent, useState } from 'react';
+import { SubmitEvent, KeyboardEvent, useState } from 'react';
 import { getUserLocationBrowser } from '~/features/location/utils/getUserLocationBrowser';
 import { userLocationTool } from '~/features/weather/tools';
 
 export const Route = createFileRoute('/_pathlessLayout/')({
   component: Home,
-  ssr: false,
 });
 
 function Home() {
@@ -42,7 +41,7 @@ function Home() {
 
   const typedMessages = messages as UIMessage[];
 
-  const handleSubmit = async (event?: FormEvent) => {
+  const handleSubmit = async (event?: SubmitEvent) => {
     event?.preventDefault();
 
     const value = input.trim();
@@ -84,7 +83,7 @@ function Home() {
             <CardContent className="pt-1">
               <div className="flex items-end gap-3">
                 <Textarea
-                  placeholder="Get the weather"
+                  placeholder="Ask for the forecast and you get a song..."
                   name="prompt"
                   className="min-h-14 flex-1 resize-none border-0 bg-transparent px-3 py-2.5 text-base leading-6 text-foreground shadow-none outline-none ring-0 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
                   value={input}
@@ -98,7 +97,7 @@ function Home() {
                   size="icon"
                   type="submit"
                 >
-                  <ArrowUp size={18} />
+                  <ArrowUpIcon size={18} />
                 </Button>
               </div>
             </CardContent>
