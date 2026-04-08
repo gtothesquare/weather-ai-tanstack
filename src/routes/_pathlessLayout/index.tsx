@@ -9,7 +9,7 @@ import {
   Card,
   CardContent,
   Textarea,
-} from '@yaip/yads-ui/client';
+} from '@yaip/yads-ui';
 import { MessagesContainer } from '~/features/messages/MessagesContainer';
 import { FormEvent, KeyboardEvent, useState } from 'react';
 import { getUserLocationBrowser } from '~/features/location/utils/getUserLocationBrowser';
