@@ -50,7 +50,6 @@ interface Props {
 }
 
 export const WeatherIcon = ({ weatherCode, iconProps }: Props) => {
-  console.log(weatherCode);
   const IconComponent = dayConditions[weatherCode];
   return IconComponent ? <IconComponent {...iconProps} /> : null;
 };
