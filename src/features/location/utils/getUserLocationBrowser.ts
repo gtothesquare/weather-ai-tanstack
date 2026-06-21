@@ -1,13 +1,33 @@
 'use client';
 
+type BrowserLocationResult =
+  | {
+      success: true;
+      data: {
+        latitude: number;
+        longitude: number;
+      };
+    }
+  | {
+      success: false;
+      error: string;
+    };
+
 const getLocationPromise = (): Promise<GeolocationPosition> => {
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(resolve, reject);
   });
 };
 
-export const getUserLocationBrowser = async () => {
-  if (navigator.geolocation) {
+export const getUserLocationBrowser =
+  async (): Promise<BrowserLocationResult> => {
+    if (!navigator.geolocation) {
+      return {
+        success: false,
+        error: 'Browser geolocation is not supported.',
+      };
+    }
+
     const location = await getLocationPromise();
     return {
       success: true,
@@ -16,10 +36,4 @@ export const getUserLocationBrowser = async () => {
         longitude: location.coords.longitude,
       },
     };
-  }
-  console.warn(`Browser geolocation is not supported`);
-  return {
-    success: false,
-    data: {},
   };
-};

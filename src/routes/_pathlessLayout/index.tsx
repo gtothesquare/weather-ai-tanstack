@@ -11,7 +11,8 @@ import {
   Textarea,
 } from '@yaip/yads-ui';
 import { MessagesContainer } from '~/features/messages/MessagesContainer';
-import { SubmitEvent, KeyboardEvent, useState } from 'react';
+import { useState } from 'react';
+import type { KeyboardEvent, SubmitEvent } from 'react';
 import { getUserLocationBrowser } from '~/features/location/utils/getUserLocationBrowser';
 import { userLocationTool } from '~/features/weather/tools';
 
@@ -28,7 +29,7 @@ function Home() {
         const location = await getUserLocationBrowser();
 
         if (!location.success) {
-          throw new Error('Browser geolocation is not supported.');
+          throw new Error(location.error);
         }
 
         return location.data;
@@ -41,7 +42,7 @@ function Home() {
 
   const typedMessages = messages as UIMessage[];
 
-  const handleSubmit = async (event?: SubmitEvent) => {
+  const handleSubmit = async (event?: SubmitEvent<HTMLFormElement>) => {
     event?.preventDefault();
 
     const value = input.trim();
