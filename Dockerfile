@@ -1,13 +1,13 @@
 # Base image with pnpm installed
 FROM node:24-slim AS base
 WORKDIR /app
-RUN npm install -g pnpm
+RUN npm install -g pnpm@11.8.0
 
 # ----------------------
 # 1. Install dependencies
 # ----------------------
 FROM base AS deps
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 
 # ----------------------
