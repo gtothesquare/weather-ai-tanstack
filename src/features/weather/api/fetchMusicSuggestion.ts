@@ -1,4 +1,5 @@
-import { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } from '~/config';
+import '@tanstack/react-start/server-only';
+
 import type { WeatherData } from '../types';
 import type { MusicSuggestion } from '../widgetSchema';
 
@@ -20,6 +21,20 @@ interface SpotifyTrackSearchResponse {
 interface WeatherMusicSeed {
   query: string;
   reason: string;
+}
+
+async function readErrorPayload(response: Response) {
+  const body = await response.text();
+
+  if (!body) {
+    return undefined;
+  }
+
+  try {
+    return JSON.parse(body) as unknown;
+  } catch {
+    return body;
+  }
 }
 
 function randomIntBetween(min: number, max: number): number {
@@ -89,7 +104,11 @@ function buildWeatherMusicSeed(weather: WeatherData): WeatherMusicSeed {
 }
 
 async function fetchSpotifyAccessToken() {
-  if (!SPOTIFY_CLIENT_ID || !SPOTIFY_CLIENT_SECRET) {
+  const clientId = process.env.SPOTIFY_CLIENT_ID?.trim();
+  const clientSecret = process.env.SPOTIFY_CLIENT_SECRET?.trim();
+
+  if (!clientId || !clientSecret) {
+    console.warn('[musicSuggestion] Missing Spotify credentials.');
     return null;
   }
 
@@ -102,13 +121,18 @@ async function fetchSpotifyAccessToken() {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
       Authorization: `Basic ${Buffer.from(
-        `${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`
+        `${clientId}:${clientSecret}`
       ).toString('base64')}`,
     },
     body: body.toString(),
   });
 
   if (!response.ok) {
+    console.warn('[musicSuggestion] Spotify token request failed.', {
+      status: response.status,
+      statusText: response.statusText,
+      body: await readErrorPayload(response),
+    });
     return null;
   }
 
@@ -142,13 +166,21 @@ export async function fetchMusicSuggestion(
   );
 
   if (!response.ok) {
+    console.warn('[musicSuggestion] Spotify track search failed.', {
+      status: response.status,
+      statusText: response.statusText,
+      body: await readErrorPayload(response),
+    });
     return undefined;
   }
 
   const data = (await response.json()) as SpotifyTrackSearchResponse;
   const items = data.tracks?.items;
 
-  if (!items?.length) return undefined;
+  if (!items?.length) {
+    console.warn('[musicSuggestion] Spotify track search returned no results.');
+    return undefined;
+  }
 
   const track = items[randomIntBetween(0, items.length - 1)];
 

@@ -3,7 +3,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { MarkdownBlock } from '~/components/MarkdownBlock';
 
 export const Route = createFileRoute('/about/')({
-  component: About,
+  component: AboutPage,
 });
 
 const todoMd = `
@@ -15,7 +15,7 @@ const todoMd = `
  - [x] Add better tool error handling and provider rate-limit fallbacks
 `;
 
-export default function About() {
+function AboutPage() {
   return (
     <div className="mx-auto w-full max-w-3xl py-8">
       <Card className="bg-card/68 shadow-sm ring-border/45 backdrop-blur-xl">
