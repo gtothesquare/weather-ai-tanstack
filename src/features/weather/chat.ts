@@ -4,7 +4,7 @@ import {
   maxIterations,
   toServerSentEventsResponse,
 } from '@tanstack/ai';
-import { geminiText } from '@tanstack/ai-gemini';
+import { openaiCompatibleText } from '@tanstack/ai-openai/compatible';
 import prompt from './prompt.txt?raw';
 import { userLocationTool } from './tools';
 import {
@@ -14,7 +14,11 @@ import {
 
 export function generateWeatherResponse(messages: unknown[]) {
   const stream = chat({
-    adapter: geminiText('gemini-2.5-flash'),
+    adapter: openaiCompatibleText('glm-5.2', {
+      name: 'grunden',
+      baseURL: 'https://api.grunden.ai/v1',
+      apiKey: process.env.GRUNDEN_API_KEY!,
+    }),
     messages: convertMessagesToModelMessages(messages as never[]) as never[],
     systemPrompts: [prompt],
     modelOptions: {
