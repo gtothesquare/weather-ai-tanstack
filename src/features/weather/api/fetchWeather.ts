@@ -12,9 +12,7 @@ import { Coordinates, LocationParams, WeatherData } from '../types';
 
 type FetchWeatherParams = LocationParams | Coordinates;
 type WeatherProviderErrorCode =
-  | 'location-not-found'
-  | 'provider-rate-limit'
-  | 'provider-unavailable';
+  'location-not-found' | 'provider-rate-limit' | 'provider-unavailable';
 
 export const WEATHER_CACHE_TTL_MS = 2 * 60 * 1000;
 
