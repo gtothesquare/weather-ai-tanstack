@@ -2,6 +2,7 @@
   "name": "weather-ai-tanstack",
   "version": "1.0.0",
   "description": "yet another weather ai",
+  "packageManager": "pnpm@11.22.0",
   "scripts": {
     "dev": "vite dev",
     "build": "vite build && tsc --noEmit",

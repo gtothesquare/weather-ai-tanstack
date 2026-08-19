@@ -1,7 +1,7 @@
 # Base image with pnpm installed
 FROM node:26.7.0-slim AS base
 WORKDIR /app
-RUN npm install -g pnpm@11.8.0
+RUN npm install --global "$(node -p "require('./package.json').packageManager")"
 
 # ----------------------
 # 1. Install dependencies
