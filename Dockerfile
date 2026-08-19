@@ -1,6 +1,7 @@
 # Base image with pnpm installed
 FROM node:26.7.0-slim AS base
 WORKDIR /app
+COPY package.json ./
 RUN npm install --global "$(node -p "require('./package.json').packageManager")"
 
 # ----------------------
