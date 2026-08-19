@@ -1,5 +1,5 @@
 # Base image with pnpm installed
-FROM node:24-slim AS base
+FROM node:26.7.0-slim AS base
 WORKDIR /app
 RUN npm install -g pnpm@11.8.0
 
@@ -21,22 +21,10 @@ RUN pnpm build
 # ----------------------
 # 3. Production runner
 # ----------------------
-FROM node:24-slim AS runner
-
-# Install curl for healthchecks (Debian-based)
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
-
+FROM node:26.7.0-slim AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
-
-# Create a non-root user
-RUN addgroup --system --gid 1001 nodejs && \
-    adduser --system --uid 1001 nodejs
-
-# Writable directory for runtime data
-RUN mkdir -p /app/data && \
-    chown -R nodejs:nodejs /app/data
 
 # Copy only the build output
 COPY --from=builder /app/.output ./.output
@@ -47,11 +35,12 @@ COPY --from=builder /app/.output ./.output
 
 # ARG MYVAR
 # ENV MYVAR=${MYVAR}
-
+USER node
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+CMD ["node", "-e", "const p=process.env.NITRO_PORT??process.env.PORT??3000;fetch(`http://127.0.0.1:${p}/health`).then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
 
 # ----------------------
 # Expose and run
 # ----------------------
 EXPOSE 3000
-USER nodejs
 CMD ["node", ".output/server/index.mjs"]
