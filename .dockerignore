@@ -1,0 +1,13 @@
+.env
+ .env.*
+ !.env.d.ts
+ .git
+ node_modules
+ .pnpm-store
+ .output
+ .idea
+ .DS_Store
+ docs
+ .agents
+ .tanstack
+ skills-lock.json
