@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { generateWeatherResponse } from '~/features/weather/chat';
 
 const weatherRequestSchema = z.object({
+  threadId: z.string().min(1),
   messages: z.array(z.unknown()),
 });
 
@@ -31,7 +32,10 @@ export const Route = createFileRoute('/api/weather')({
         }
 
         try {
-          return generateWeatherResponse(body.data.messages);
+          return generateWeatherResponse(
+            body.data.messages,
+            body.data.threadId
+          );
         } catch (err) {
           const error = err as Error;
           const message = error.message;

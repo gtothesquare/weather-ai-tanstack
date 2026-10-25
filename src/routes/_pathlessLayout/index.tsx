@@ -22,7 +22,9 @@ export const Route = createFileRoute('/_pathlessLayout/')({
 
 function Home() {
   const [input, setInput] = useState('');
+  const [threadId] = useState(() => crypto.randomUUID());
   const { messages, sendMessage, error, status, isLoading } = useChat({
+    threadId,
     connection: fetchServerSentEvents('/api/weather'),
     tools: [
       userLocationTool.client(async () => {
