@@ -1,8 +1,8 @@
 # Base image with pnpm installed
-FROM node:26.7.0-slim AS base
+FROM node:current-slim AS base
 WORKDIR /app
 COPY package.json ./
-RUN npm install --global "$(node -p "require('./package.json').packageManager")"
+RUN npm install --global npm@latest pnpm@latest
 
 # ----------------------
 # 1. Install dependencies
@@ -22,7 +22,7 @@ RUN pnpm build
 # ----------------------
 # 3. Production runner
 # ----------------------
-FROM node:26.7.0-slim AS runner
+FROM node:current-slim AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production

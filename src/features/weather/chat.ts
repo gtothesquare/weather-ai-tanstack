@@ -12,8 +12,9 @@ import {
   weatherInfoWithCoordinatesServerTool,
 } from './tools.server';
 
-export function generateWeatherResponse(messages: unknown[]) {
+export function generateWeatherResponse(messages: unknown[], threadId: string) {
   const stream = chat({
+    threadId,
     adapter: openaiCompatibleText('glm-5.2', {
       name: 'grunden',
       baseURL: 'https://api.grunden.ai/v1',
